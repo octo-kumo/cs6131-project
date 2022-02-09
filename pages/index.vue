@@ -5,7 +5,6 @@
         checkpoint-1
       </h1>
       <div>
-        {{ test }}
         <div class="links">
           <a
             href="/John"
