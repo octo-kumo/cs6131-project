@@ -1,15 +1,10 @@
-const express = require('express')
-
+import express from 'express'
 // Create express instance
 const app = express()
 
-// Require API routes
-const users = require('./routes/users')
-const test = require('./routes/test')
-
-// Import API Routes
-app.use(users)
-app.use(test)
+app.get('/:name', (req, res) => {
+  res.end(req.params.name)
+})
 
 // Export express app
 module.exports = app
