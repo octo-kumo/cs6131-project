@@ -1,8 +1,9 @@
 <template>
   <section class="container">
     <div>
+      <EREditor />
       <h1 class="title">
-        Hello! {{ $route.params.name }}
+        Hellwwwo! {{ $route.params.name }}
       </h1>
       <nuxt-link class="button" to="/">
         Home
@@ -11,9 +12,17 @@
   </section>
 </template>
 
-<script>
-export default {
-  head () {
+<script lang="ts">
+import {Component, Vue} from 'nuxt-property-decorator'
+import EREditor from '~/components/editor/EREditor.vue'
+
+@Component({
+  components: {
+    EREditor
+  }
+})
+export default class Named extends Vue {
+  head() {
     return {
       title: `User: ${this.$route.params.name}`
     }

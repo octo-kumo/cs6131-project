@@ -18,8 +18,13 @@
   </div>
 </template>
 
-<script>
-export default {}
+<script lang="ts">
+import {Component, Vue} from 'nuxt-property-decorator'
+
+@Component
+export default class Index extends Vue {
+  name = 'index';
+}
 </script>
 
 <style scoped>

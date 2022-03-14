@@ -4,15 +4,25 @@ module.exports = {
     browser: true,
     node: true
   },
-  parserOptions: {
-    parser: 'babel-eslint'
-  },
+  parser: 'vue-eslint-parser',
   extends: [
-    '@nuxtjs',
-    'plugin:nuxt/recommended'
+    '@nuxtjs/eslint-config-typescript',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:vue/recommended'
   ],
-  plugins: [
-  ],
-  // add your custom rules here
-  rules: {}
+  parserOptions: {
+    ecmaVersion: 2020
+  },
+  rules: {
+    'quotes': 'off',
+    'curly': 'off',
+    'quote-props': 'off',
+    'object-curly-spacing': 'off',
+    'space-before-function-paren': 'off',
+    'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/ban-ts-comment': 'off'
+  }
 }
