@@ -56,4 +56,13 @@ auth.post('/logout', (req, res) => {
   })
 })
 
+auth.get('/users', (req, res) => {
+  database().query('select * from vusers;').then((results: any) => {
+    console.log('The result is: ', results)
+    res.json({status: "success", users: results})
+  }).catch((e) => {
+    res.json({status: "failed", error: e.code})
+  })
+})
+
 export default auth
