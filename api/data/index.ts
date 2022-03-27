@@ -9,24 +9,27 @@ export async function init() {
     host: 'localhost',
     port: 3306,
     user: 'root',
-    password: 'admin',
-    database: 'evilEr'
+    password: 'admin'
   })
   console.log('connected to sql server')
+  await db.query('DROP DATABASE IF EXISTS evilEr;')
+  await db.query('CREATE DATABASE IF NOT EXISTS evilEr;')
+  await db.query('use evilEr;')
   const length = (await db.query('show tables;')).length
   console.log(length + ' tables found')
-  if (length < 18) await initDB()
+  if (length === 0) {
+    await run('init.sql')
+    await run('queries.sql')
+    await run('populate.sql')
+  }
 }
 
-async function initDB() {
-  const content = fs.readFileSync(path.join(__dirname, 'init.sql')).toString()
-  let i = 0
-  for (const line of content.trim().split(/\s*;\n\s*/g)) {
+async function run(file: string) {
+  const content = fs.readFileSync(path.join(__dirname, file)).toString()
+  for (const line of content.trim().split(/\s*;(?!#)\n\s*/g)) {
     if (!line) continue
     await db.query(line)
-    i++
   }
-  console.log(i + " inits")
 }
 
 export default () => db

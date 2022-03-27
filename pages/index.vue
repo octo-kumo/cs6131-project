@@ -2,15 +2,29 @@
   <div class="container">
     <div>
       <h1 class="title">
-        checkpoint-1
+        checkpoint-2
       </h1>
       <div>
+        <div v-if="user">
+          <p>
+            Logged in as <span v-text="user.email"/>
+          </p>
+          <p>
+            ID <span v-text="user.uid"/>
+          </p>
+        </div>
         <div class="links">
           <a
-            href="/John"
+            href="/login"
             class="button--green"
           >
-            I am John
+            Login
+          </a>
+          <a v-if="user"
+             href="/logout"
+             class="button--grey"
+          >
+            Logout
           </a>
         </div>
       </div>
@@ -20,10 +34,19 @@
 
 <script lang="ts">
 import {Component, Vue} from 'nuxt-property-decorator'
+import User from "~/model/user"
 
 @Component
 export default class Index extends Vue {
-  name = 'index';
+  name = 'index'
+
+  mounted() {
+    this.$store.dispatch("populate")
+  }
+
+  get user(): User | null {
+    return this.$store.state.user
+  }
 }
 </script>
 
