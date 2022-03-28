@@ -2,7 +2,7 @@
 USE evilEr;
 CREATE PROCEDURE login(IN eml VARCHAR(32), IN pwd VARCHAR(32))
 BEGIN
-  SELECT *
+  SELECT uid, name, email, pfp, isAdmin
   FROM user
   WHERE email = eml
     AND pwd_hash = SHA1(pwd);#
@@ -21,5 +21,5 @@ BEGIN
 END;
 
 CREATE VIEW vUsers AS
-SELECT uid, name, email, pfp, type
+SELECT uid, name, email, pfp, isAdmin
 from user;

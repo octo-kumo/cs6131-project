@@ -19,6 +19,8 @@ module.exports = {
     'quote-props': 'off',
     'object-curly-spacing': 'off',
     'space-before-function-paren': 'off',
+    'no-return-assign': 'off',
+    'vue/html-closing-bracket-spacing': 'off',
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',

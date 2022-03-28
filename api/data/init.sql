@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS `User`
   uid        VARCHAR(36) UNIQUE default (uuid()),
   pfp        VARCHAR(128),
   name       VARCHAR(32),
-  type       VARCHAR(16),
+  isAdmin    BOOL,
   email      VARCHAR(32) UNIQUE,
   pwd_hash   CHAR(40),
   last_login DATETIME,
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS `User`
 
 CREATE TABLE IF NOT EXISTS MESSAGE
 (
-  mid      VARCHAR(36) default (uuid_to_bin(uuid())),
+  mid      VARCHAR(36),
   text     TEXT,
   datetime DATETIME,
   C1_cid   VARCHAR(36), # from 'Container'; SENT
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS Diagram
 (
   did    VARCHAR(36) UNIQUE,
   name   VARCHAR(32),
-  type   VARCHAR(16),
+  isEr   BOOL,
   C1_cid VARCHAR(36), # from 'Container'; FROM
   PRIMARY KEY (did)
 );
@@ -58,18 +58,13 @@ CREATE TABLE IF NOT EXISTS Editor
 
 CREATE TABLE IF NOT EXISTS Object
 (
-  x           FLOAT(16),
-  y           FLOAT(16),
-  id          VARCHAR(36),
-  role        VARCHAR(32),
-  name        VARCHAR(32),
-  type        VARCHAR(16),
-  total       BOOL,
-  outlined    BOOL,
-  cardinality VARCHAR(8),
-  D1_did      VARCHAR(36), # from 'Diagram'; BELONGS_TO
-  O1_id       VARCHAR(36), # from 'Object'; RELATES
-  O1_did      VARCHAR(36), # from 'Object'; RELATES
+  x        FLOAT(16),
+  y        FLOAT(16),
+  id       VARCHAR(36),
+  name     VARCHAR(32),
+  type     VARCHAR(16),
+  outlined BOOL,
+  D1_did   VARCHAR(36), # from 'Diagram'; BELONGS_TO
   PRIMARY KEY (id, D1_did)
 );
 
@@ -129,6 +124,18 @@ CREATE TABLE IF NOT EXISTS CAN_VIEW
   PRIMARY KEY (C1_cid, U1_uid)
 );
 
+CREATE TABLE IF NOT EXISTS RELATES
+(
+  role        VARCHAR(32),
+  total       BOOL,
+  cardinality VARCHAR(8),
+  O1_id       VARCHAR(36), # from 'Object'; Object
+  O1_did      VARCHAR(36), # from 'Object'; Object
+  O2_id       VARCHAR(36), # from 'Object'; Object
+  O2_did      VARCHAR(36), # from 'Object'; Object
+  PRIMARY KEY (O1_id, O1_did, O2_id, O2_did)
+);
+
 CREATE TABLE IF NOT EXISTS LAST_EDITED_BY
 (
   datetime DATETIME,
@@ -183,8 +190,7 @@ ALTER TABLE Editor
   ADD FOREIGN KEY (uid) REFERENCES `User` (uid);
 
 ALTER TABLE Object
-  ADD FOREIGN KEY (D1_did) REFERENCES Diagram (did),
-  ADD FOREIGN KEY (O1_id, O1_did) REFERENCES Object (id, D1_did);
+  ADD FOREIGN KEY (D1_did) REFERENCES Diagram (did);
 
 ALTER TABLE Attribute
   ADD FOREIGN KEY (O1_id, O1_did) REFERENCES Object (id, D1_did),
@@ -206,6 +212,10 @@ ALTER TABLE CAN_EDIT
 ALTER TABLE CAN_VIEW
   ADD FOREIGN KEY (C1_cid) REFERENCES Container (cid),
   ADD FOREIGN KEY (U1_uid) REFERENCES `User` (uid);
+
+ALTER TABLE RELATES
+  ADD FOREIGN KEY (O1_id, O1_did) REFERENCES Object (id, D1_did),
+  ADD FOREIGN KEY (O2_id, O2_did) REFERENCES Object (id, D1_did);
 
 ALTER TABLE LAST_EDITED_BY
   ADD FOREIGN KEY (D1_did) REFERENCES Diagram (did),
