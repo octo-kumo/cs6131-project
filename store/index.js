@@ -1,20 +1,24 @@
+import { get } from '~/plugins/api'
+
 export const state = () => ({
-  user: null
+  user: null,
+  containers: null
 })
 
 export const mutations = {
   user (state, user) {
     state.user = user
+  },
+  containers (state, containers) {
+    state.containers = containers
   }
 }
 
 export const actions = {
   populate ({ commit }) {
-    fetch('/api/auth').then(res => res.json()).then(data => commit('user', data.user))
-  },
-  nuxtServerInit ({ commit }, { req }) {
-    if (req.session && req.session.user) {
-      commit('user', req.session.user)
-    }
+    return Promise.all([
+      get('/api/auth').then(data => commit('user', data.user)),
+      get(`/api/c/`).then(data => commit('containers', data.containers))
+    ])
   }
 }

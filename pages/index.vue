@@ -2,31 +2,18 @@
   <div class="container">
     <div>
       <h1 class="title">
-        checkpoint-2
+        Evil ER
       </h1>
-      <div>
-        <div v-if="user">
-          <p>
-            Logged in as <span v-text="user.email"/>
-          </p>
-          <p>
-            ID <span v-text="user.uid"/>
-          </p>
-        </div>
-        <div class="links">
-          <a
-            href="/login"
-            class="button--green"
-          >
-            Login
-          </a>
-          <a v-if="user"
-             href="/logout"
-             class="button--grey"
-          >
-            Logout
-          </a>
-        </div>
+      <h2 class="subtitle">
+        Your go-to solution for<br>drawing entity relation diagrams
+      </h2>
+      <div class="flex justify-center links gap-2">
+        <nuxt-link to="/c" class="btn">
+          View Collections
+        </nuxt-link>
+        <nuxt-link to="/new/c" class="btn primary">
+          Create new Collection
+        </nuxt-link>
       </div>
     </div>
   </div>
@@ -34,19 +21,10 @@
 
 <script lang="ts">
 import {Component, Vue} from 'nuxt-property-decorator'
-import User from "~/model/user"
 
 @Component
 export default class Index extends Vue {
   name = 'index'
-
-  mounted() {
-    this.$store.dispatch("populate")
-  }
-
-  get user(): User | null {
-    return this.$store.state.user
-  }
 }
 </script>
 

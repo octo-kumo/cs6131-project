@@ -20,15 +20,13 @@
 
 <script lang="ts">
 import {Component, Vue} from 'nuxt-property-decorator'
-import {get} from "~/plugins/api"
 
 @Component
 export default class containersView extends Vue {
   name = 'containersView'
-  containers = []
 
-  mounted() {
-    get(`/api/c/`).then(res => this.containers = res.containers)
+  get containers() {
+    return this.$store.state.containers || []
   }
 }
 </script>

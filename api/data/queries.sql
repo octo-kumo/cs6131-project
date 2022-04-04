@@ -6,6 +6,10 @@ BEGIN
   FROM user
   WHERE email = eml
     AND pwd_hash = SHA1(pwd);#
+  UPDATE user
+  SET last_login = NOW()
+  WHERE email = eml
+    AND pwd_hash = SHA1(pwd);#
 END;
 
 CREATE PROCEDURE register(IN nme VARCHAR(32), IN eml VARCHAR(32), IN password VARCHAR(32))
@@ -18,6 +22,14 @@ CREATE PROCEDURE addEntity(IN id CHAR(36), IN nme VARCHAR(32), IN eml VARCHAR(32
 BEGIN
   INSERT INTO user (uid, name, email, pwd_hash)
   VALUES (id, nme, eml, SHA1(password));#
+END;
+
+CREATE PROCEDURE objects(IN did VARCHAR(36), IN tpe VARCHAR(36))
+BEGIN
+  SELECT *
+  FROM object
+  WHERE D1_did = did
+    AND type = tpe;#
 END;
 
 CREATE VIEW vUsers AS

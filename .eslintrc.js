@@ -16,6 +16,7 @@ module.exports = {
   rules: {
     'quotes': 'off',
     'curly': 'off',
+    'multiline-ternary': 'off',
     'quote-props': 'off',
     'object-curly-spacing': 'off',
     'space-before-function-paren': 'off',

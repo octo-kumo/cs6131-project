@@ -1,66 +1,65 @@
 <template>
-  <div class="container">
-    <form
-      v-if="isLogin"
-      class="max-w-md mx-auto my-2 bg-slate-100 rounded-xl border-2 p-4"
-      @submit.prevent="loginSubmit()"
-    >
-      <h1 class="text-center text-2xl">
+  <form
+    v-if="isLogin"
+    class="max-w-md mx-auto bg-slate-100 rounded-xl border-2 p-4 mt-2"
+    @submit.prevent="loginSubmit()"
+  >
+    <h1 class="text-center text-2xl">
+      Login
+    </h1>
+    <div class="grid grid-cols-2 m-2">
+      <label class="text-right px-4">Email</label>
+      <input v-model="email" name="email" placeholder="user@example.com">
+    </div>
+    <div class="grid grid-cols-2 m-2">
+      <label class="text-right px-4">Password</label>
+      <input v-model="password" name="password" type="password" minlength="8" placeholder="Password">
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <button class="rounded-xl px-3 py-1 bg-green-500 text-white " type="submit">
         Login
-      </h1>
-      <div class="grid grid-cols-2 m-2">
-        <label class="text-right px-4">Email</label>
-        <input v-model="email" name="email" placeholder="user@example.com">
-      </div>
-      <div class="grid grid-cols-2 m-2">
-        <label class="text-right px-4">Password</label>
-        <input v-model="password" name="password" type="password" minlength="8" placeholder="Password">
-      </div>
+      </button>
+      <button class="rounded-xl px-3 py-1 bg-yellow-500 text-white" @click="isLogin=false">
+        Goto Register
+      </button>
+    </div>
+  </form>
+  <form v-else class="max-w-md mx-auto my-2 bg-slate-100 rounded-xl border-2 p-4" @submit.prevent="registerSubmit()">
+    <h1 class="text-center text-2xl">
+      Register
+    </h1>
+    <div class="grid grid-cols-2 m-2">
+      <label class="text-right px-4">Name</label>
+      <input v-model="name" name="name" placeholder="Your Name">
+    </div>
+    <div class="grid grid-cols-2 m-2">
+      <label class="text-right px-4">Email</label>
+      <input v-model="email" name="email" placeholder="user@example.com">
+    </div>
+    <div class="grid grid-cols-2 m-2">
+      <label class="text-right px-4">Password</label>
+      <input v-model="password" name="password" type="password" minlength="8" placeholder="Password">
+    </div>
+    <div class="grid grid-cols-2 m-2">
+      <label class="text-right px-4">Repeat</label>
+      <input v-model="rpassword" name="password" type="password" minlength="8" placeholder="Repeat Password">
+    </div>
+    <div class="grid m-2">
       <div class="grid grid-cols-2 gap-4">
-        <button class="rounded-xl px-3 py-1 bg-green-500 text-white " type="submit">
-          Login
+        <button class="rounded-xl px-3 py-1 bg-red-500 text-white" @click="isLogin=true">
+          Goto Login
         </button>
-        <button class="rounded-xl px-3 py-1 bg-yellow-500 text-white" @click="isLogin=false">
-          Goto Register
+        <button class="rounded-xl px-3 py-1 bg-green-500 text-white" type="submit">
+          Register
         </button>
       </div>
-    </form>
-    <form v-else class="max-w-md mx-auto my-2 bg-slate-100 rounded-xl border-2 p-4" @submit.prevent="registerSubmit()">
-      <h1 class="text-center text-2xl">
-        Register
-      </h1>
-      <div class="grid grid-cols-2 m-2">
-        <label class="text-right px-4">Name</label>
-        <input v-model="name" name="name" placeholder="Your Name">
-      </div>
-      <div class="grid grid-cols-2 m-2">
-        <label class="text-right px-4">Email</label>
-        <input v-model="email" name="email" placeholder="user@example.com">
-      </div>
-      <div class="grid grid-cols-2 m-2">
-        <label class="text-right px-4">Password</label>
-        <input v-model="password" name="password" type="password" minlength="8" placeholder="Password">
-      </div>
-      <div class="grid grid-cols-2 m-2">
-        <label class="text-right px-4">Repeat</label>
-        <input v-model="rpassword" name="password" type="password" minlength="8" placeholder="Repeat Password">
-      </div>
-      <div class="grid m-2">
-        <div class="grid grid-cols-2 gap-4">
-          <button class="rounded-xl px-3 py-1 bg-red-500 text-white" @click="isLogin=true">
-            Goto Login
-          </button>
-          <button class="rounded-xl px-3 py-1 bg-green-500 text-white" type="submit">
-            Register
-          </button>
-        </div>
-      </div>
-    </form>
-  </div>
+    </div>
+  </form>
 </template>
 
 <script lang="ts">
-import {Component, Vue} from 'nuxt-property-decorator'
+import {Component, Vue, Watch} from 'nuxt-property-decorator'
+import User from "~/model/user";
 
 @Component
 export default class login extends Vue {
@@ -69,6 +68,15 @@ export default class login extends Vue {
   email = ""
   password = ""
   rpassword = ""
+
+  get user() {
+    return this.$store.state.user
+  }
+
+  @Watch('user', {immediate: true})
+  onUserChange(user?: User) {
+    if (user) this.$router.push("/")
+  }
 
   loginSubmit() {
     fetch("/api/auth/login", {
@@ -80,7 +88,8 @@ export default class login extends Vue {
       }
     }).then(res => res.json()).then((res) => {
       if (res.status === "success") {
-        this.$router.push("/")
+        console.log("success")
+        this.$store.dispatch("populate")
       } else alert(res.error)
     })
   }

@@ -8,7 +8,7 @@ const auth = Router({
 })
 auth.get('/', (req, res) => {
   if (req.session.user) {
-    res.json({user: req.session.user})
+    res.json({status: "success", user: req.session.user})
   } else {
     res.json({})
   }

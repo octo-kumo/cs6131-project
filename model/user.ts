@@ -6,26 +6,26 @@ export default class User {
   name!: string
   email!: string
   type?: string
-  pwdHash!: string
-  lastLogin?: number
+  pwd_hash!: string
+  last_login?: number
+  isAdmin?: boolean
 
-  lastView?: string
-  lastViewTime?: number
-
-  constructor({uid, pfp, name, email, type, pwdHash, lastLogin, lastViewTime}: Partial<User>) {
+  // eslint-disable-next-line camelcase
+  constructor({uid, pfp, name, email, type, pwd_hash, last_login}: Partial<User>) {
     this.uid = uid || uuid()
     this.pfp = pfp
     this.name = name || "Anonymous"
     this.email = email || ""
     this.type = type
-    this.pwdHash = pwdHash || ""
-    this.lastLogin = lastLogin
-    this.lastViewTime = lastViewTime
+    // eslint-disable-next-line camelcase
+    this.pwd_hash = pwd_hash || ""
+    // eslint-disable-next-line camelcase
+    this.last_login = last_login
   }
 
   toSQL() {
-    return `INSERT INTO eviler.user (uid, pfp, name, type, email, pwd_hash, lastLogin, lastViewTime, C1_cid)
-            VALUES (${this.uid}, ${this.pfp}, ${this.name}, ${this.type}, ${this.email}, ${this.pwdHash},
-                    ${this.lastLogin}, ${this.lastViewTime}, ${this.lastView});`
+    return `INSERT INTO eviler.user (uid, pfp, name, isAdmin, email, pwd_hash, last_login)
+            VALUES (${this.uid}, ${this.pfp}, ${this.name}, ${this.isAdmin}, ${this.email}, ${this.pwd_hash},
+                    ${this.last_login});`
   }
 }

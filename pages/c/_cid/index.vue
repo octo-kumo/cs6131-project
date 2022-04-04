@@ -4,8 +4,8 @@
       Container {{ $route.params.cid }}
     </h1>
     <div v-if="container">
-      <h1 v-text="container.cid"></h1>
-      <h3 v-text="container.name"></h3>
+      <h1 v-text="container.cid"/>
+      <h3 v-text="container.name"/>
     </div>
     <div v-if="diagrams">
       <div
@@ -19,6 +19,9 @@
         <h1 v-text="d.name"/>
       </div>
     </div>
+    <button class="btn btn-primary">
+      Test
+    </button>
   </div>
 </template>
 

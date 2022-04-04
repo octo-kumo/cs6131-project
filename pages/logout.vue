@@ -20,9 +20,8 @@ export default class logout extends Vue {
     fetch("/api/auth/logout", {
       method: "POST"
     }).then(res => res.json()).then((res) => {
-      if (res.status === "success") {
-        this.$router.push("/")
-      } else alert(res.error)
+      if (res.status === "success") location.href = "/"
+      else alert(res.error)
     })
   }
 }
