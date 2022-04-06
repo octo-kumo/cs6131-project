@@ -11,7 +11,7 @@ export async function init() {
     user: 'root',
     password: 'admin'
   })
-  console.log('connected to sql server')
+  console.log('connected to sql server...')
   await db.query('DROP DATABASE IF EXISTS evilEr;')
   await db.query('CREATE DATABASE IF NOT EXISTS evilEr;')
   await db.query('use evilEr;')

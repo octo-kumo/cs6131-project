@@ -2,12 +2,34 @@
 USE evilEr;
 CREATE PROCEDURE login(IN eml VARCHAR(32), IN pwd VARCHAR(32))
 BEGIN
+  UPDATE user
+  SET last_login = NOW()
+  WHERE email = eml
+    AND pwd_hash = SHA1(pwd);#
   SELECT uid, name, email, pfp, isAdmin
   FROM user
   WHERE email = eml
     AND pwd_hash = SHA1(pwd);#
+END;
+
+CREATE PROCEDURE updateProfile(IN eml VARCHAR(32), IN pwd VARCHAR(32), IN nme VARCHAR(32), IN pp VARCHAR(128))
+BEGIN
   UPDATE user
-  SET last_login = NOW()
+  SET name = nme,
+      pfp  = pp
+  WHERE email = eml
+    AND pwd_hash = SHA1(pwd);#
+
+  SELECT uid, name, email, pfp, isAdmin
+  FROM user
+  WHERE email = eml
+    AND pwd_hash = SHA1(pwd);#
+END;
+
+CREATE PROCEDURE updatePassword(IN eml VARCHAR(32), IN pwd VARCHAR(32), IN npwd VARCHAR(32))
+BEGIN
+  UPDATE user
+  SET pwd_hash = SHA1(npwd)
   WHERE email = eml
     AND pwd_hash = SHA1(pwd);#
 END;

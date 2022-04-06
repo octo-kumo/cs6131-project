@@ -10,7 +10,10 @@ auth.get('/', (req, res) => {
   if (req.session.user) {
     res.json({status: "success", user: req.session.user})
   } else {
-    res.json({})
+    res.json({
+      status: "failed",
+      error: "not logged in"
+    })
   }
 })
 auth.post('/login', (req, res) => {
@@ -27,7 +30,24 @@ auth.post('/login', (req, res) => {
     res.json({status: "failed", error: e})
   })
 })
-
+auth.post('/profile', (req, res) => {
+  if (req.body.npassword && String(req.body.npassword).length < 8) return res.json({
+    status: 'failed',
+    error: "Password too short"
+  })
+  database().query(`call updateProfile(${escape(req.body.email)}, ${escape(req.body.password)}, ${escape(req.body.name)}, ${escape(req.body.pfp)});`).then(async (results: any) => {
+    const users = results[0]
+    if (users.length === 0) res.json({status: "failed", error: "Invalid email/password"})
+    else {
+      if (req.body.npassword) await database().query(`call updatePassword(${escape(req.body.email)}, ${escape(req.body.password)}, ${escape(req.body.npassword)});`)
+      req.session.user = users[0]
+      console.log("logged in", req.session.user)
+      res.json({status: "success", user: users[0]})
+    }
+  }).catch((e) => {
+    res.json({status: "failed", error: e})
+  })
+})
 auth.post('/register', (req, res) => {
   if (String(req.body.name).length < 5) return res.json({
     status: "failed",

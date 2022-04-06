@@ -56,6 +56,7 @@ export default class ERObject extends Vector {
       this._trueWidth = Math.max(WIDTH, ctx.measureText(this.name).width * 1.05)
       if (this.weak) this.drawShape(ctx, this.getShape(this._trueWidth - 6, HEIGHT - 6))
     }
+    ctx.stroke()
   }
 
   getShape(width?: number, height?: number): Shape {

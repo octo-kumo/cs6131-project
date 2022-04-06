@@ -2,6 +2,11 @@ USE evilEr;
 CALL register('admin', 'admin@nush.app', 'password');
 CALL register('test', 'test@nush.app', 'password');
 
+INSERT INTO user (uid, pfp, name, isAdmin, email, pwd_hash, last_login)
+VALUES ('13371337-1337-1337-1337-133713371337',
+        'https://files.catbox.moe/4ri4bv.png', 'yun', true,
+        'h1710169@nushigh.edu.sg', SHA1('password'), null);
+
 INSERT INTO container (cid, name)
 VALUES ('test', 'Test Collection');
 

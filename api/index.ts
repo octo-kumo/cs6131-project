@@ -4,6 +4,7 @@ import session from "express-session"
 import bodyParser from "body-parser"
 import db, {init} from './data'
 import auth from "./routes/auth"
+import users from "./routes/users"
 import containers from "./routes/container"
 import diagrams from "./routes/diagram"
 
@@ -22,6 +23,7 @@ app.use(bodyParser.urlencoded())
 app.get('/hello', (req, res) => res.end('world'))
 app.use('/c', containers)
 app.use('/d', diagrams)
+app.use('/u', users)
 app.use('/auth', auth)
 
 // Export express app

@@ -26,7 +26,7 @@
     </div>
     <div class="m-2">
       <label>Profile Picture</label>
-      <img class="object-cover w-32 h-32" :src="user&&user.pfp||'/images/guest.png'" alt="">
+      <img class="object-cover w-32 h-32" :src="pfp||(user&&user.pfp)||'/images/guest.png'" alt="">
       <input v-model="pfp" class="w-full" name="pfp" type="url" placeholder="https://example.com/image.png">
     </div>
     <div class="grid grid-cols-2 gap-4">
@@ -53,7 +53,7 @@ export default class profile extends Vue {
   npassword = ""
   rpassword = ""
 
-  @Watch('user')
+  @Watch('user', {immediate: true})
   onUserChange(user?: User) {
     this.name = user?.name || ''
     this.pfp = user?.pfp || ''
@@ -62,16 +62,16 @@ export default class profile extends Vue {
 
   profileSubmit() {
     if (this.npassword !== this.rpassword) return alert("Password mismatch")
-    if (this.npassword && !this.opassword) return alert("Old password must be supplied")
+    if (!this.opassword) return alert("Old password must be supplied")
     fetch("/api/auth/profile", {
       method: "POST",
       body: JSON.stringify({
         name: this.name,
         email: this.email,
         pfp: this.pfp,
+        password: this.opassword,
         ...(this.npassword ? {
-          npassword: this.npassword,
-          opassword: this.opassword
+          npassword: this.npassword
         } : {})
       }),
       headers: {

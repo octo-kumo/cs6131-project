@@ -1,10 +1,10 @@
-export interface admin {
+export interface adminSQL {
   'retired': number | null;
   'start_time': Date | null;
   'uid': string;
 }
 
-export interface attribute {
+export interface attributeSQL {
   'did': string;
   'id': string;
   'isDerived': number | null;
@@ -13,19 +13,19 @@ export interface attribute {
   'O1_id': string | null;
 }
 
-export interface can_edit {
+export interface canEditSQL {
   'C1_cid': string;
   'E1_uid': string;
   'start_time': Date | null;
 }
 
-export interface can_view {
+export interface canViewSQL {
   'C1_cid': string;
   'start_time': Date | null;
   'U1_uid': string;
 }
 
-export interface column {
+export interface columnSQL {
   'isKey': number | null;
   'name': string;
   'notNull': number | null;
@@ -35,30 +35,30 @@ export interface column {
   'type': string | null;
 }
 
-export interface container {
+export interface containerSQL {
   'cid': string;
   'name': string | null;
 }
 
-export interface created_by {
+export interface createdBySQL {
   'C1_cid': string;
   'datetime': Date | null;
   'U1_uid': string;
 }
 
-export interface diagram {
+export interface diagramSQL {
   'C1_cid': string | null;
   'did': string;
   'isEr': number | null;
   'name': string | null;
 }
 
-export interface editor {
+export interface editorSQL {
   'reputation': number | null;
   'uid': string;
 }
 
-export interface foreign {
+export interface foreignSQL {
   'required': number | null;
   'role': string | null;
   'T1_did': string;
@@ -67,19 +67,19 @@ export interface foreign {
   'T2_name': string;
 }
 
-export interface last_edited_by {
+export interface lastEditedBySQL {
   'D1_did': string;
   'datetime': Date | null;
   'U1_uid': string;
 }
 
-export interface last_view {
+export interface lastViewSQL {
   'D1_did': string;
   'datetime': Date | null;
   'U1_uid': string;
 }
 
-export interface message {
+export interface messageSQL {
   'C1_cid': string;
   'datetime': Date | null;
   'mid': string;
@@ -87,17 +87,17 @@ export interface message {
   'U1_uid': string;
 }
 
-export interface Object {
+export interface ObjectSQL {
   'D1_did': string;
   'id': string;
-  'name': string | null;
-  'outlined': number | null;
-  'type': string | null;
-  'x': number | null;
-  'y': number | null;
+  'name': string;
+  'outlined': boolean;
+  'type': 'entity' | 'relationship' | 'attribute' | '';
+  'x': number;
+  'y': number;
 }
 
-export interface relates {
+export interface relatesSQL {
   'cardinality': string | null;
   'O1_did': string;
   'O1_id': string;
@@ -107,20 +107,20 @@ export interface relates {
   'total': number | null;
 }
 
-export interface specialization {
+export interface specializationSQL {
   'did': string;
   'disjoint': number | null;
   'id': string;
 }
 
-export interface table {
+export interface tableSQL {
   'D1_did': string;
   'name': string;
   'x': number | null;
   'y': number | null;
 }
 
-export interface user {
+export interface userSQL {
   'email': string | null;
   'isAdmin': number | null;
   'last_login': Date | null;
@@ -130,7 +130,7 @@ export interface user {
   'uid'?: string;
 }
 
-export interface vusers {
+export interface vusersSQL {
   'email': string | null;
   'isAdmin': number | null;
   'name': string | null;

@@ -19,8 +19,8 @@
         <h1 v-text="d.name"/>
       </div>
     </div>
-    <button class="btn btn-primary">
-      Test
+    <button class="btn primary">
+      New
     </button>
   </div>
 </template>

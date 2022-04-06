@@ -22,7 +22,7 @@
     </div>
     <div class="flex items-center">
       <div class="cursor-pointer w-16 h-16 hover:bg-gray-200 flex items-center justify-center" @click="isOpen=true">
-        <img class="rounded-full w-10 h-10 object-cover" src="/images/guest.png" alt="avatar">
+        <img class="rounded-full w-10 h-10 object-cover" :src="(user&&user.pfp)||'/images/guest.png'" alt="avatar">
       </div>
     </div>
     <transition
@@ -50,7 +50,7 @@
       :class="isOpen ? 'translate-x-0' : '-translate-x-full'"
     >
       <div class="user-profile m-1 mb-2 rounded flex overflow-hidden">
-        <img class="w-16 h-16 object-cover" src="/images/guest.png" alt="avatar">
+        <img class="w-16 h-16 object-cover" :src="(user&&user.pfp)||'/images/guest.png'" alt="avatar">
         <div class="flex-grow">
           <h1 class="text-2xl px-2 bg-gray-50 py-0.5" v-text="user&&user.name||'Guest'"/>
           <h3 class="text-sm py-1 px-2" v-text="user&&user.email||'anonymous'"/>
@@ -79,19 +79,32 @@
           Login
         </nuxt-link>
       </div>
-      <hr/>
+      <hr>
       <div class="mx-2 my-1">
         <h1 class="text-lg px-2">
           Containers
         </h1>
         <ul>
           <li v-for="(c,i) in containers" :key="i" class="w-full p-0.5">
-            <nuxt-link :to="`/c/${c.cid}`" class="rounded bg-gray-50 block p-1 ring-1 ring-gray-200">
+            <nuxt-link
+              :to="`/c/${c.cid}`"
+              active-class="bg-blue-500 text-white hover:bg-blue-700"
+              class="rounded hover:bg-gray-100 block p-1 ring-1 ring-gray-200"
+            >
               {{ c.name }}
             </nuxt-link>
           </li>
         </ul>
       </div>
+      <hr>
+
+      <nuxt-link
+        :to="`/u`"
+        active-class="bg-blue-500 text-white hover:bg-blue-700"
+        class="rounded hover:bg-gray-100 block p-1 ring-1 ring-gray-200"
+      >
+        Users
+      </nuxt-link>
     </aside>
   </nav>
 </template>
