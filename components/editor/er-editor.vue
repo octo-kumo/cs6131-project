@@ -84,6 +84,9 @@ export default class EREditor extends Vue {
     ctx.scale(this.scale, this.scale)
     ctx.translate(this.origin.x, this.origin.y)
     ctx.fillRect(this.mouseWorld.x, this.mouseWorld.y, 10, 10)
+
+    ctx.textAlign = "center"
+    ctx.textBaseline = 'middle'
   }
 
   drawInfo(ctx: CanvasRenderingContext2D) {

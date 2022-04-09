@@ -122,6 +122,8 @@ export default class diagramView extends Vue {
         return Relationship
       case "entity":
         return Entity
+      case "specialization":
+        return Specialization
       default:
         return ERObject
     }

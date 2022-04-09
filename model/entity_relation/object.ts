@@ -47,7 +47,6 @@ export default class ERObject extends Vector {
   paint(ctx: CanvasRenderingContext2D) {
     this.attributes.forEach(a => a.draw(ctx))
     this.drawShape(ctx)
-    ctx.textAlign = "center"
     ctx.fillText(this.name, 0, 0)
   }
 

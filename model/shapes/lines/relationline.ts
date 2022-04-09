@@ -3,6 +3,7 @@ import ERObject from "~/model/entity_relation/object"
 import {Relation} from "~/model/entity_relation/relationship"
 import {fancyLine} from "~/model/shapes/lines/fancyline"
 import Vector, {alwaysUp} from "~/model/entity_relation/vector"
+import {Shape} from "~/model/shapes/shape";
 
 export interface RelationLineParam {
   a: ERObject;
@@ -38,7 +39,6 @@ export class RelationLine extends Line {
       ctx.save()
       ctx.translate(mid.x, mid.y)
       ctx.rotate(angle)
-      ctx.textAlign = "center"
       ctx.fillText(this.r.role, 0, 0)
       ctx.restore()
     }
@@ -46,7 +46,6 @@ export class RelationLine extends Line {
       const dist = 10
       const angle = alwaysUp(d.angle() + Math.PI / 2) +
         ((this.r.uniqueIndex || 0) % 2 === (d.x >= 0 ? 1 : 0) ? 0 : Math.PI)
-      ctx.textAlign = "center"
       c.incre(Math.cos(angle) * dist, Math.sin(angle) * dist)
       ctx.fillText(this.r.cardinality, c.x, c.y)
     }

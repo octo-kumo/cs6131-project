@@ -1,4 +1,4 @@
-import ERObject, {HEIGHT, ObjectParams} from '@/model/entity_relation/object'
+import ERObject, {HEIGHT, ObjectParams, WIDTH} from '@/model/entity_relation/object'
 import Entity from '@/model/entity_relation/entity'
 import {Shape} from "~/model/shapes/shape"
 import {Diamond} from "~/model/shapes/diamond"
@@ -45,6 +45,17 @@ export default class Relationship extends ERObject {
     if (width && height) {
       return new Diamond(-width / 2, -height / 2, width, height)
     } else return this.getShape(this._trueWidth, HEIGHT)
+  }
+
+
+  drawShape(ctx: CanvasRenderingContext2D, shape?: Shape) {
+    if (shape) {
+      super.drawShape(ctx, shape)
+    } else {
+      this.drawShape(ctx, this.getShape())
+      this._trueWidth = Math.max(WIDTH, ctx.measureText(this.name).width * 1.05)
+      if (this.weak) this.drawShape(ctx, this.getShape(this._trueWidth - 15, HEIGHT - 6))
+    }
   }
 }
 
