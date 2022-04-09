@@ -16,6 +16,7 @@ export interface VectorParams {
 export default class Vector {
   _x = 0
   _y = 0
+  static ZERO = new Vector({})
 
   constructor({x, y}: VectorParams) {
     this.set(x ?? 0, y ?? 0)

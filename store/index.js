@@ -27,7 +27,7 @@ export const actions = {
     ]).catch((e) => {
       console.error(e)
       if (e === 'not logged in' && location.pathname !== '/login') {
-        location.href = '/login'
+        // location.href = '/login'
       }
     })
   }

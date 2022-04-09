@@ -7,6 +7,5 @@ export abstract class Shape {
     ctx.setLineDash([5, 15])
     this.draw(ctx)
     ctx.setLineDash([])
-    ctx.stroke()
   }
 }

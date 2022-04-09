@@ -22,6 +22,7 @@ export class Line extends Shape {
     ctx.beginPath()
     ctx.moveTo(this.a.x, this.a.y)
     ctx.lineTo(this.b.x, this.b.y)
+    ctx.closePath()
     ctx.stroke()
   }
 

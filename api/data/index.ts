@@ -21,6 +21,7 @@ export async function init() {
     await run('init.sql')
     await run('queries.sql')
     await run('populate.sql')
+    await run('er_eviler.sql')
   }
 }
 

@@ -1,5 +1,5 @@
 export interface adminSQL {
-  'retired': number | null;
+  'retired': boolean;
   'start_time': Date | null;
   'uid': string;
 }
@@ -7,8 +7,8 @@ export interface adminSQL {
 export interface attributeSQL {
   'did': string;
   'id': string;
-  'isDerived': number | null;
-  'isKey': number | null;
+  'isDerived': boolean;
+  'isKey': boolean;
   'O1_did': string | null;
   'O1_id': string | null;
 }
@@ -26,9 +26,9 @@ export interface canViewSQL {
 }
 
 export interface columnSQL {
-  'isKey': number | null;
+  'isKey': boolean;
   'name': string;
-  'notNull': number | null;
+  'notNull': boolean;
   'param': string | null;
   'T1_did': string;
   'T1_name': string;
@@ -49,7 +49,7 @@ export interface createdBySQL {
 export interface diagramSQL {
   'C1_cid': string | null;
   'did': string;
-  'isEr': number | null;
+  'isEr': boolean;
   'name': string | null;
 }
 
@@ -59,7 +59,7 @@ export interface editorSQL {
 }
 
 export interface foreignSQL {
-  'required': number | null;
+  'required': boolean;
   'role': string | null;
   'T1_did': string;
   'T1_name': string;
@@ -87,12 +87,14 @@ export interface messageSQL {
   'U1_uid': string;
 }
 
-export interface ObjectSQL {
+export type ObjectType = 'entity' | 'relationship' | 'attribute' | 'specialization';
+
+export interface objectSQL {
   'D1_did': string;
   'id': string;
   'name': string;
   'outlined': boolean;
-  'type': 'entity' | 'relationship' | 'attribute' | '';
+  'type': ObjectType;
   'x': number;
   'y': number;
 }
@@ -104,25 +106,25 @@ export interface relatesSQL {
   'O2_did': string;
   'O2_id': string;
   'role': string | null;
-  'total': number | null;
+  'total': boolean;
 }
 
 export interface specializationSQL {
   'did': string;
-  'disjoint': number | null;
+  'disjoint': boolean;
   'id': string;
 }
 
 export interface tableSQL {
   'D1_did': string;
   'name': string;
-  'x': number | null;
-  'y': number | null;
+  'x': number;
+  'y': number;
 }
 
 export interface userSQL {
   'email': string | null;
-  'isAdmin': number | null;
+  'isAdmin': boolean;
   'last_login': Date | null;
   'name': string | null;
   'pfp': string | null;
@@ -132,7 +134,7 @@ export interface userSQL {
 
 export interface vusersSQL {
   'email': string | null;
-  'isAdmin': number | null;
+  'isAdmin': boolean;
   'name': string | null;
   'pfp': string | null;
   'uid'?: string;

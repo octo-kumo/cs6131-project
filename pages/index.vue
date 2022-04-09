@@ -5,7 +5,7 @@
         Evil ER
       </h1>
       <h2 class="subtitle">
-        Your go-to solution for<br>drawing entity relation diagrams
+        Your go-to solution for<br>drawing <b>entity relation diagrams</b>
       </h2>
       <div class="flex justify-center links gap-2">
         <nuxt-link to="/c" class="btn">

@@ -1,4 +1,4 @@
-import ERObject, {HEIGHT, ObjectParams, WIDTH} from '@/model/entity_relation/object'
+import ERObject, {HEIGHT, ObjectParams} from '@/model/entity_relation/object'
 import Entity from '@/model/entity_relation/entity'
 import {Shape} from "~/model/shapes/shape"
 import {Diamond} from "~/model/shapes/diamond"
@@ -41,22 +41,13 @@ export default class Relationship extends ERObject {
     this.relations.forEach(r => predraw(ctx, r))
   }
 
-  drawShape(ctx: CanvasRenderingContext2D, shape?: Shape) {
-    if (shape) {
-      this.drawShape(ctx, this.getShape())
-      // Ensure at least 7 px per character
-      const newWidth = Math.max(WIDTH, this._trueWidth)
-      if (this.weak) this.drawShape(ctx, this.getShape(newWidth - 15, HEIGHT - 6))
-    } else super.drawShape(ctx)
-  }
-
   getShape(width?: number, height?: number): Shape {
     if (width && height) {
       return new Diamond(-width / 2, -height / 2, width, height)
-    } else return super.getShape()
+    } else return this.getShape(this._trueWidth, HEIGHT)
   }
 }
 
 function predraw(ctx: CanvasRenderingContext2D, relation: Relation) {
-
+//
 }

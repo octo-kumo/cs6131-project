@@ -15,11 +15,13 @@ export class Diamond extends Shape {
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
+    ctx.beginPath()
     ctx.moveTo(this.x, this.y + this.height / 2)
     ctx.lineTo(this.x + this.width / 2, this.y)
     ctx.lineTo(this.x + this.width, this.y + this.height / 2)
     ctx.lineTo(this.x + this.width / 2, this.y + this.height)
     ctx.closePath()
+    ctx.stroke()
   }
 
   translated(x: number, y: number): Shape {

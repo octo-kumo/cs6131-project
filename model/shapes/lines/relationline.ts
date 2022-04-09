@@ -19,7 +19,6 @@ export class RelationLine extends Line {
     this.r = r
   }
 
-
   draw(ctx: CanvasRenderingContext2D) {
     this.setNormal()
     const a = this.getStart()

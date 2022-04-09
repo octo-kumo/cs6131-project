@@ -15,7 +15,10 @@ export class Ellipse2D extends Shape {
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
+    ctx.beginPath()
     ctx.ellipse(this.x, this.y, this.width / 2, this.height / 2, 0, 0, 0)
+    ctx.closePath()
+    ctx.stroke()
   }
 
   translated(x: number, y: number): Shape {

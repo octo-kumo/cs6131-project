@@ -9,18 +9,25 @@
     </h1>
     <div class="grid grid-cols-2 m-2">
       <label class="text-right px-4">Email</label>
-      <input v-model="email" name="email" placeholder="user@example.com">
+      <input v-model="email" name="email" placeholder="user@example.com" required>
     </div>
     <div class="grid grid-cols-2 m-2">
       <label class="text-right px-4">Password</label>
-      <input v-model="password" name="password" type="password" minlength="8" placeholder="Password">
+      <input
+        v-model="password"
+        name="password"
+        type="password"
+        minlength="8"
+        placeholder="Password"
+        required
+      >
     </div>
     <div class="grid grid-cols-2 gap-4">
-      <button class="rounded-xl px-3 py-1 bg-green-500 text-white " type="submit">
-        Login
+      <button class="btn" @click="isLogin=false">
+        Register
       </button>
-      <button class="rounded-xl px-3 py-1 bg-yellow-500 text-white" @click="isLogin=false">
-        Goto Register
+      <button class="btn success" type="submit">
+        Login
       </button>
     </div>
   </form>
@@ -30,26 +37,40 @@
     </h1>
     <div class="grid grid-cols-2 m-2">
       <label class="text-right px-4">Name</label>
-      <input v-model="name" name="name" placeholder="Your Name">
+      <input v-model="name" name="name" placeholder="Your Name" required>
     </div>
     <div class="grid grid-cols-2 m-2">
       <label class="text-right px-4">Email</label>
-      <input v-model="email" name="email" placeholder="user@example.com">
+      <input v-model="email" name="email" placeholder="user@example.com" required>
     </div>
     <div class="grid grid-cols-2 m-2">
       <label class="text-right px-4">Password</label>
-      <input v-model="password" name="password" type="password" minlength="8" placeholder="Password">
+      <input
+        v-model="password"
+        name="password"
+        type="password"
+        minlength="8"
+        placeholder="Password"
+        required
+      >
     </div>
     <div class="grid grid-cols-2 m-2">
       <label class="text-right px-4">Repeat</label>
-      <input v-model="rpassword" name="password" type="password" minlength="8" placeholder="Repeat Password">
+      <input
+        v-model="rpassword"
+        name="password"
+        type="password"
+        minlength="8"
+        placeholder="Repeat Password"
+        required
+      >
     </div>
     <div class="grid m-2">
       <div class="grid grid-cols-2 gap-4">
-        <button class="rounded-xl px-3 py-1 bg-red-500 text-white" @click="isLogin=true">
-          Goto Login
+        <button class="btn" @click="isLogin=true">
+          Login
         </button>
-        <button class="rounded-xl px-3 py-1 bg-green-500 text-white" type="submit">
+        <button class="btn success" type="submit">
           Register
         </button>
       </div>
@@ -59,7 +80,7 @@
 
 <script lang="ts">
 import {Component, Vue, Watch} from 'nuxt-property-decorator'
-import User from "~/model/user";
+import User from "~/model/user"
 
 @Component
 export default class login extends Vue {

@@ -4,6 +4,7 @@ import {Shape} from "~/model/shapes/shape"
 import {Rectangle2D} from "~/model/shapes/rectangle2d"
 
 export interface ObjectParams extends VectorParams {
+  id: string;
   name: string;
   weak?: boolean;
 }
@@ -12,13 +13,15 @@ export const WIDTH = 100
 export const HEIGHT = 40
 export default class ERObject extends Vector {
   _trueWidth = WIDTH
+  id: string
   name: string
   weak: boolean
 
   attributes: Attribute[] = []
 
-  constructor({name, weak, x, y}: ObjectParams) {
+  constructor({id, name, weak, x, y}: ObjectParams) {
     super({x, y})
+    this.id = id
     this.name = name
     this.weak = weak ?? false
   }

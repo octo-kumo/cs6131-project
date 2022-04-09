@@ -77,7 +77,7 @@ auth.post('/logout', (req, res) => {
 })
 
 auth.get('/users', (req, res) => {
-  database().query('select * from vusers;').then((results: any) => {
+  database().query('select * from eviler.vusers;').then((results: any) => {
     console.log('The result is: ', results)
     res.json({status: "success", users: results})
   }).catch((e) => {

@@ -24,7 +24,7 @@ containers.get('/:cid', (req, res) => {
 containers.get('/:cid/d', (req, res) => {
   database().query(`SELECT *
                     FROM eviler.diagram
-                    WHERE C1_cid = ${escape(req.params.cid)};`).then((results: any) => {
+                    WHERE cid = ${escape(req.params.cid)};`).then((results: any) => {
     res.json({status: "success", diagrams: results})
   }).catch(error => res.json({status: "failed", error}))
 })

@@ -46,11 +46,11 @@ BEGIN
   VALUES (id, nme, eml, SHA1(password));#
 END;
 
-CREATE PROCEDURE objects(IN did VARCHAR(36), IN tpe VARCHAR(36))
+CREATE PROCEDURE objects(IN dd VARCHAR(36), IN tpe VARCHAR(36))
 BEGIN
   SELECT *
   FROM object
-  WHERE D1_did = did
+  WHERE did = dd
     AND type = tpe;#
 END;
 

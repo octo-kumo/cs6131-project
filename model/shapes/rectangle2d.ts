@@ -15,7 +15,10 @@ export class Rectangle2D extends Shape {
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
+    ctx.beginPath()
     ctx.rect(this.x, this.y, this.width, this.height)
+    ctx.closePath()
+    ctx.stroke()
   }
 
   translated(x: number, y: number): Shape {

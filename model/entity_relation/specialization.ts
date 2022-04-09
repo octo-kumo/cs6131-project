@@ -9,8 +9,8 @@ export interface SpecializationParam extends RelationParam {
 export default class Specialization extends Relationship {
   disjoint: boolean
 
-  constructor({name, weak, superclass, disjoint, x, y}: SpecializationParam) {
-    super({name, weak, x, y})
+  constructor({id, name, weak, superclass, disjoint, x, y}: SpecializationParam) {
+    super({id, name, weak, x, y})
     this.disjoint = Boolean(disjoint)
     if (superclass) this.addRelation({entity: superclass})
   }

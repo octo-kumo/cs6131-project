@@ -43,9 +43,12 @@
 import {Component, Vue, Watch} from 'nuxt-property-decorator'
 import {get} from "~/plugins/api"
 import ErEditor from "~/components/editor/er-editor.vue"
-import {diagramSQL, ObjectSQL} from "~/types/data-types"
+import {attributeSQL, diagramSQL, objectSQL, ObjectType, specializationSQL} from "~/types/data-types"
 import ERObject from "~/model/entity_relation/object"
+import Attribute from "~/model/entity_relation/attribute"
+import Relationship from "~/model/entity_relation/relationship"
 import Entity from "~/model/entity_relation/entity"
+import Specialization from "~/model/entity_relation/specialization"
 
 @Component({
   components: {ErEditor}
@@ -54,7 +57,7 @@ export default class diagramView extends Vue {
   name = 'diagramView'
   diagram: diagramSQL | null = null
   infoOpen = true
-  objects: ObjectSQL[] = []
+  objects: objectSQL[] = []
 
   nodes: ERObject[] = []
 
@@ -64,12 +67,64 @@ export default class diagramView extends Vue {
   }
 
   @Watch('objects')
-  onObjectChanged(objects: ObjectSQL[]) {
+  onObjectChanged(objects: objectSQL[]) {
     //
-    console.log(objects)
-    objects.filter(o => o.type !== 'attribute').forEach((o) => {
-      this.nodes.push(new Entity({name: o.name, x: o.x, y: o.y}))
+    objects.filter(o => o.type !== 'attribute').forEach((sqlO) => {
+      console.log(sqlO)
+      const o = sqlO as objectSQL & attributeSQL & specializationSQL
+      let no
+      this.nodes.push(no = new (this.getType(o.type))({
+        id: o.id,
+        name: o.name,
+        x: o.x,
+        y: o.y,
+        weak: o.outlined
+      }))
+      switch (o.type) {
+        case "specialization":
+          (no as Specialization).disjoint = o.disjoint
+          break
+        default:
+          break
+      }
     })
+    const attributes: Attribute[] = []
+    objects.filter(o => o.type === 'attribute').forEach((o: objectSQL) => {
+      const a = o as attributeSQL & objectSQL
+      attributes.push(new Attribute({
+        id: a.id,
+        name: a.name,
+        x: a.x,
+        y: a.y,
+        weak: a.outlined,
+        derived: a.isDerived,
+        key: a.isKey,
+        _parent: a.O1_id || ''
+      }))
+    })
+    attributes.forEach((o: ERObject) => {
+      (o as Attribute).parent = this.nodes.find(n => n.id === (o as Attribute)._parent) ||
+        attributes.find(n => n.id === (o as Attribute)._parent)
+      if (!(o as Attribute).parent) {
+        console.log(o.name, (o as Attribute)._parent)
+      }
+      (o as Attribute).parent?.attributes.push(o as Attribute)
+    })
+
+    console.log(this.nodes)
+  }
+
+  getType(type: ObjectType) {
+    switch (type) {
+      case "attribute":
+        return Attribute
+      case "relationship":
+        return Relationship
+      case "entity":
+        return Entity
+      default:
+        return ERObject
+    }
   }
 }
 </script>

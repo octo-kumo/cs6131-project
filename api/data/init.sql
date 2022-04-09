@@ -20,9 +20,9 @@ CREATE TABLE IF NOT EXISTS MESSAGE
   mid      VARCHAR(36),
   text     TEXT,
   datetime DATETIME,
-  C1_cid   VARCHAR(36), # from 'Container'; SENT
-  U1_uid   VARCHAR(36), # from 'User'; SENT
-  PRIMARY KEY (mid, C1_cid, U1_uid)
+  cid      VARCHAR(36), # from 'Container'; SENT
+  uid      VARCHAR(36), # from 'User'; SENT
+  PRIMARY KEY (mid, cid, uid)
 );
 
 CREATE TABLE IF NOT EXISTS Container
@@ -34,10 +34,10 @@ CREATE TABLE IF NOT EXISTS Container
 
 CREATE TABLE IF NOT EXISTS Diagram
 (
-  did    VARCHAR(36) UNIQUE,
-  name   VARCHAR(32),
-  isEr   BOOL,
-  C1_cid VARCHAR(36), # from 'Container'; FROM
+  did  VARCHAR(36) UNIQUE,
+  name VARCHAR(32),
+  isEr BOOL,
+  cid  VARCHAR(36), # from 'Container'; FROM
   PRIMARY KEY (did)
 );
 
@@ -64,8 +64,8 @@ CREATE TABLE IF NOT EXISTS Object
   name     VARCHAR(32),
   type     VARCHAR(16),
   outlined BOOL,
-  D1_did   VARCHAR(36), # from 'Diagram'; BELONGS_TO
-  PRIMARY KEY (id, D1_did)
+  did      VARCHAR(36), # from 'Diagram'; BELONGS_TO
+  PRIMARY KEY (id, did)
 );
 
 CREATE TABLE IF NOT EXISTS Attribute
@@ -89,11 +89,11 @@ CREATE TABLE IF NOT EXISTS Specialization
 
 CREATE TABLE IF NOT EXISTS `Table`
 (
-  x      FLOAT(16),
-  y      FLOAT(16),
-  name   VARCHAR(32),
-  D1_did VARCHAR(36), # from 'Diagram'; BELONGS_TO
-  PRIMARY KEY (name, D1_did)
+  x    FLOAT(16),
+  y    FLOAT(16),
+  name VARCHAR(32),
+  did  VARCHAR(36), # from 'Diagram'; BELONGS_TO
+  PRIMARY KEY (name, did)
 );
 
 CREATE TABLE IF NOT EXISTS `Column`
@@ -111,17 +111,17 @@ CREATE TABLE IF NOT EXISTS `Column`
 CREATE TABLE IF NOT EXISTS CAN_EDIT
 (
   start_time DATETIME,
-  C1_cid     VARCHAR(36), # from 'Container'; Container
+  cid        VARCHAR(36), # from 'Container'; Container
   E1_uid     VARCHAR(36), # from 'Editor'; Editor
-  PRIMARY KEY (C1_cid, E1_uid)
+  PRIMARY KEY (cid, E1_uid)
 );
 
 CREATE TABLE IF NOT EXISTS CAN_VIEW
 (
   start_time DATETIME,
-  C1_cid     VARCHAR(36), # from 'Container'; Container
-  U1_uid     VARCHAR(36), # from 'User'; User
-  PRIMARY KEY (C1_cid, U1_uid)
+  cid        VARCHAR(36), # from 'Container'; Container
+  uid        VARCHAR(36), # from 'User'; User
+  PRIMARY KEY (cid, uid)
 );
 
 CREATE TABLE IF NOT EXISTS RELATES
@@ -133,23 +133,23 @@ CREATE TABLE IF NOT EXISTS RELATES
   O1_did      VARCHAR(36), # from 'Object'; Object
   O2_id       VARCHAR(36), # from 'Object'; Object
   O2_did      VARCHAR(36), # from 'Object'; Object
-  PRIMARY KEY (O1_id, O1_did, O2_id, O2_did)
+  PRIMARY KEY (O1_id, O1_did, O2_id, O2_did, role)
 );
 
 CREATE TABLE IF NOT EXISTS LAST_EDITED_BY
 (
   datetime DATETIME,
-  D1_did   VARCHAR(36), # from 'Diagram'; Diagram
-  U1_uid   VARCHAR(36), # from 'User'; User
-  PRIMARY KEY (D1_did, U1_uid)
+  did      VARCHAR(36), # from 'Diagram'; Diagram
+  uid      VARCHAR(36), # from 'User'; User
+  PRIMARY KEY (did, uid)
 );
 
 CREATE TABLE IF NOT EXISTS CREATED_BY
 (
   datetime DATETIME,
-  C1_cid   VARCHAR(36), # from 'Container'; Container
-  U1_uid   VARCHAR(36), # from 'User'; User
-  PRIMARY KEY (C1_cid, U1_uid)
+  cid      VARCHAR(36), # from 'Container'; Container
+  uid      VARCHAR(36), # from 'User'; User
+  PRIMARY KEY (cid, uid)
 );
 
 CREATE TABLE IF NOT EXISTS `FOREIGN`
@@ -166,22 +166,22 @@ CREATE TABLE IF NOT EXISTS `FOREIGN`
 CREATE TABLE IF NOT EXISTS LAST_VIEW
 (
   datetime DATETIME,
-  D1_did   VARCHAR(36), # from 'Diagram'; Diagram
-  U1_uid   VARCHAR(36), # from 'User'; User
-  PRIMARY KEY (D1_did, U1_uid)
+  did      VARCHAR(36), # from 'Diagram'; Diagram
+  uid      VARCHAR(36), # from 'User'; User
+  PRIMARY KEY (did, uid)
 );
 
 ##### TABLE ALTER #####
 
 
 ALTER TABLE MESSAGE
-  ADD FOREIGN KEY (C1_cid) REFERENCES Container (cid),
-  ADD FOREIGN KEY (U1_uid) REFERENCES `User` (uid);
+  ADD FOREIGN KEY (cid) REFERENCES Container (cid),
+  ADD FOREIGN KEY (uid) REFERENCES `User` (uid);
 
 
 
 ALTER TABLE Diagram
-  ADD FOREIGN KEY (C1_cid) REFERENCES Container (cid);
+  ADD FOREIGN KEY (cid) REFERENCES Container (cid);
 
 ALTER TABLE Admin
   ADD FOREIGN KEY (uid) REFERENCES `User` (uid);
@@ -190,45 +190,45 @@ ALTER TABLE Editor
   ADD FOREIGN KEY (uid) REFERENCES `User` (uid);
 
 ALTER TABLE Object
-  ADD FOREIGN KEY (D1_did) REFERENCES Diagram (did);
+  ADD FOREIGN KEY (did) REFERENCES Diagram (did);
 
 ALTER TABLE Attribute
-  ADD FOREIGN KEY (O1_id, O1_did) REFERENCES Object (id, D1_did),
-  ADD FOREIGN KEY (id, did) REFERENCES Object (id, D1_did);
+  ADD FOREIGN KEY (O1_id, O1_did) REFERENCES Object (id, did),
+  ADD FOREIGN KEY (id, did) REFERENCES Object (id, did);
 
 ALTER TABLE Specialization
-  ADD FOREIGN KEY (id, did) REFERENCES Object (id, D1_did);
+  ADD FOREIGN KEY (id, did) REFERENCES Object (id, did);
 
 ALTER TABLE `Table`
-  ADD FOREIGN KEY (D1_did) REFERENCES Diagram (did);
+  ADD FOREIGN KEY (did) REFERENCES Diagram (did);
 
 ALTER TABLE `Column`
-  ADD FOREIGN KEY (T1_name, T1_did) REFERENCES `Table` (name, D1_did);
+  ADD FOREIGN KEY (T1_name, T1_did) REFERENCES `Table` (name, did);
 
 ALTER TABLE CAN_EDIT
-  ADD FOREIGN KEY (C1_cid) REFERENCES Container (cid),
+  ADD FOREIGN KEY (cid) REFERENCES Container (cid),
   ADD FOREIGN KEY (E1_uid) REFERENCES Editor (uid);
 
 ALTER TABLE CAN_VIEW
-  ADD FOREIGN KEY (C1_cid) REFERENCES Container (cid),
-  ADD FOREIGN KEY (U1_uid) REFERENCES `User` (uid);
+  ADD FOREIGN KEY (cid) REFERENCES Container (cid),
+  ADD FOREIGN KEY (uid) REFERENCES `User` (uid);
 
 ALTER TABLE RELATES
-  ADD FOREIGN KEY (O1_id, O1_did) REFERENCES Object (id, D1_did),
-  ADD FOREIGN KEY (O2_id, O2_did) REFERENCES Object (id, D1_did);
+  ADD FOREIGN KEY (O1_id, O1_did) REFERENCES Object (id, did),
+  ADD FOREIGN KEY (O2_id, O2_did) REFERENCES Object (id, did);
 
 ALTER TABLE LAST_EDITED_BY
-  ADD FOREIGN KEY (D1_did) REFERENCES Diagram (did),
-  ADD FOREIGN KEY (U1_uid) REFERENCES `User` (uid);
+  ADD FOREIGN KEY (did) REFERENCES Diagram (did),
+  ADD FOREIGN KEY (uid) REFERENCES `User` (uid);
 
 ALTER TABLE CREATED_BY
-  ADD FOREIGN KEY (C1_cid) REFERENCES Container (cid),
-  ADD FOREIGN KEY (U1_uid) REFERENCES `User` (uid);
+  ADD FOREIGN KEY (cid) REFERENCES Container (cid),
+  ADD FOREIGN KEY (uid) REFERENCES `User` (uid);
 
 ALTER TABLE `FOREIGN`
-  ADD FOREIGN KEY (T1_name, T1_did) REFERENCES `Table` (name, D1_did),
-  ADD FOREIGN KEY (T2_name, T2_did) REFERENCES `Table` (name, D1_did);
+  ADD FOREIGN KEY (T1_name, T1_did) REFERENCES `Table` (name, did),
+  ADD FOREIGN KEY (T2_name, T2_did) REFERENCES `Table` (name, did);
 
 ALTER TABLE LAST_VIEW
-  ADD FOREIGN KEY (D1_did) REFERENCES Diagram (did),
-  ADD FOREIGN KEY (U1_uid) REFERENCES `User` (uid);
+  ADD FOREIGN KEY (did) REFERENCES Diagram (did),
+  ADD FOREIGN KEY (uid) REFERENCES `User` (uid);

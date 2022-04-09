@@ -24,8 +24,19 @@ diagrams.get('/:did', (req, res) => {
 diagrams.get('/:did/o', (req, res) => {
   database().query(`SELECT *
                     FROM eviler.object
-                    WHERE D1_did = ${escape(req.params.did)};`).then((results: any) => {
+                           natural left join eviler.attribute a
+                           natural left join eviler.specialization s
+                    WHERE object.did = ${escape(req.params.did)};`).then((results: any) => {
     res.json({status: "success", objects: results})
+  }).catch(error => res.json({status: "failed", error}))
+})
+
+diagrams.get('/:did/r', (req, res) => {
+  database().query(`SELECT *
+                    FROM eviler.relates
+                    WHERE O1_did = ${escape(req.params.did)}
+                      AND O2_did = ${escape(req.params.did)};`).then((results: any) => {
+    res.json({status: "success", relates: results})
   }).catch(error => res.json({status: "failed", error}))
 })
 
