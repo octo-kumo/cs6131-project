@@ -56,10 +56,10 @@ import Specialization from "~/model/entity_relation/specialization"
 export default class diagramView extends Vue {
   name = 'diagramView'
   diagram: diagramSQL | null = null
-  infoOpen = true
   objects: objectSQL[] = []
-
   nodes: ERObject[] = []
+
+  infoOpen = false
 
   mounted() {
     get(`/api/d/${this.$route.params.did}`).then(res => this.diagram = res.diagram)

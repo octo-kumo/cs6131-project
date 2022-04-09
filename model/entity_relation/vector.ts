@@ -38,12 +38,13 @@ export default class Vector {
   }
 
   incre(x: number | Vector, y?: number): Vector {
-    if (x instanceof Vector) return this.set(x.x, x.y)
+    if (x instanceof Vector) return this.set(this.x + x.x, this.y + x.y)
     return this.set(this.x + x, this.y + (y ?? x))
   }
 
   decre(x: number | Vector, y?: number): Vector {
-    return this.incre(-x, -(y ?? x))
+    if (x instanceof Vector) return this.decre(x.x, x.y)
+    return this.incre(-x, y ? -y : undefined)
   }
 
   scale(x: number, y?: number): Vector {
@@ -151,5 +152,9 @@ export default class Vector {
 
   set x(value: number) {
     this._x = value
+  }
+
+  toString() {
+    return `(${this.x.toFixed(3)}, ${this.y.toFixed(3)})`
   }
 }
