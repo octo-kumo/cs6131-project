@@ -44,8 +44,7 @@ export default class Specialization extends Relationship {
   }
 
   getShape(width?: number, height?: number): Shape {
-    if (width && height) {
-      return new Ellipse2D(-height * 0.25, -height * 0.25, height * 0.5, height * 0.5)
-    } else return this.getShape(this._trueWidth, HEIGHT)
+    if (width && height) return new Ellipse2D(-height * 0.25, -height * 0.25, height * 0.5, height * 0.5)
+    else return this.getShape(this._trueWidth, HEIGHT)
   }
 }

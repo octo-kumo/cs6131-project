@@ -1,6 +1,6 @@
 import ERObject, {HEIGHT, ObjectParams, WIDTH} from '@/model/entity_relation/object'
 import Entity from '@/model/entity_relation/entity'
-import {Shape} from "~/model/shapes/shape"
+import {drawLine, Shape} from "~/model/shapes/shape"
 import {Diamond} from "~/model/shapes/diamond"
 
 export type RelationParam = ObjectParams
@@ -38,15 +38,13 @@ export default class Relationship extends ERObject {
 
   predraw(ctx: CanvasRenderingContext2D) {
     super.predraw(ctx)
-    this.relations.forEach(r => predraw(ctx, r))
+    this.relations.forEach(r => predraw(ctx, this, r))
   }
 
   getShape(width?: number, height?: number): Shape {
-    if (width && height) {
-      return new Diamond(-width / 2, -height / 2, width, height)
-    } else return this.getShape(this._trueWidth, HEIGHT)
+    if (width && height) return new Diamond(-width / 2, -height / 2, width, height)
+    else return this.getShape(this._trueWidth, HEIGHT)
   }
-
 
   drawShape(ctx: CanvasRenderingContext2D, shape?: Shape) {
     if (shape) {
@@ -59,6 +57,6 @@ export default class Relationship extends ERObject {
   }
 }
 
-function predraw(ctx: CanvasRenderingContext2D, relation: Relation) {
-//
+function predraw(ctx: CanvasRenderingContext2D, relationship: Relationship, relation: Relation) {
+  drawLine(ctx, relationship.x, relationship.y, relation.entity.x, relation.entity.y)
 }

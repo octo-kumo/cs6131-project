@@ -4,8 +4,16 @@ export abstract class Shape {
   abstract translated(x: number, y: number): Shape;
 
   dashed(ctx: CanvasRenderingContext2D) {
-    ctx.setLineDash([5, 15])
+    ctx.setLineDash([2])
     this.draw(ctx)
     ctx.setLineDash([])
   }
+}
+
+export function drawLine(ctx: CanvasRenderingContext2D, x1: number, y1: number, x2: number, y2: number) {
+  ctx.beginPath()
+  ctx.moveTo(x1, y1)
+  ctx.lineTo(x2, y2)
+  ctx.closePath()
+  ctx.stroke()
 }

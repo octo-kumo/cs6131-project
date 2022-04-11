@@ -90,12 +90,12 @@ export default class EREditor extends Vue {
   }
 
   drawInfo(ctx: CanvasRenderingContext2D) {
-    ctx.fillText("FPS: " + this.fps.toFixed(2), 10, 80)
-    ctx.fillText("Scale: " + this.scale.toFixed(2), 10, 90)
-    ctx.fillText("PX Ratio: " + this.ratio, 10, 100)
-    ctx.fillText("Origin: " + this.origin.x + ", " + this.origin.y, 10, 110)
-    ctx.fillText("Entities: " + this.nodes.length, 10, 120)
-    ctx.fillText("state = " + this.mouseState, 10, 140)
+    ctx.fillText(`FPS: ${this.fps.toFixed(2)}`, 10, 80)
+    ctx.fillText(`Scale: ${this.scale.toFixed(2)}`, 10, 90)
+    ctx.fillText(`Origin: ${this.origin.x.toFixed(2)}, ${this.origin.y.toFixed(2)}`, 10, 100)
+    ctx.fillText(`PX Ratio: ${this.ratio}`, 10, 110)
+    ctx.fillText(`Entities: ${this.nodes.length}`, 10, 120)
+    ctx.fillText(`state = ${this.mouseState}`, 10, 140)
   }
 
   calculateFPS() {

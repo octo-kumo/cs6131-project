@@ -1,4 +1,4 @@
-import ERObject, {HEIGHT, ObjectParams} from '@/model/entity_relation/object'
+import ERObject, {HEIGHT, ObjectParams, WIDTH} from '@/model/entity_relation/object'
 import {Shape} from "~/model/shapes/shape"
 import {Ellipse2D} from "~/model/shapes/ellipse"
 import Vector from "~/model/entity_relation/vector"
@@ -23,12 +23,13 @@ export default class Attribute extends ERObject {
   type: AttributeType
   param?: string
 
-  constructor({id, name, weak, key, derived, type, parent, x, y}: AttributeParams) {
+  constructor({id, name, weak, key, derived, type, parent, x, y, _parent}: AttributeParams) {
     super({id, name, weak, x, y})
     this.key = key ?? false
     this.derived = derived ?? false
     this.type = type ?? 'string'
     this.parent = parent
+    this._parent = _parent
   }
 
   drawShape(ctx: CanvasRenderingContext2D, shape?: Shape) {
@@ -41,7 +42,7 @@ export default class Attribute extends ERObject {
 
   prepaint(ctx: CanvasRenderingContext2D) {
     super.prepaint(ctx)
-    new Line({a: this.parent || Vector.ZERO, b: this.truePosition().neg()}).draw(ctx)
+    new Line({b: this.truePosition().neg()}).draw(ctx)
   }
 
   paint(ctx: CanvasRenderingContext2D) {
@@ -58,13 +59,21 @@ export default class Attribute extends ERObject {
   }
 
   getShape(width?: number, height?: number): Shape {
-    if (width && height) {
-      const newWidth = Math.max(width * 0.7, this._trueWidth)
-      return new Ellipse2D(-newWidth / 2, -height * 0.7 / 2, newWidth, height * 0.7)
-    } else return this.getShape(this._trueWidth, HEIGHT)
+    if (width && height) return new Ellipse2D(-width / 2, -height * 0.7 / 2, width, height * 0.7)
+    else return this.getShape(this._trueWidth * 0.7, HEIGHT)
   }
 
   truePosition() {
     return new Vector({x: this._x, y: this._y})
+  }
+
+  setParent(parent?: ERObject) {
+    if (this.parent) this.incre(this.parent)
+    if (parent) this.decre(parent)
+    return this.parent = parent
+  }
+
+  updateTrueWidth(ctx: CanvasRenderingContext2D) {
+    return Math.max(WIDTH * 0.7, ctx.measureText(this.name).width * 1.05)
   }
 }

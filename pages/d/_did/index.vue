@@ -43,7 +43,7 @@
 import {Component, Vue, Watch} from 'nuxt-property-decorator'
 import {get} from "~/plugins/api"
 import ErEditor from "~/components/editor/er-editor.vue"
-import {attributeSQL, diagramSQL, objectSQL, ObjectType, specializationSQL} from "~/types/data-types"
+import {attributeSQL, diagramSQL, objectSQL, ObjectType, relatesSQL, specializationSQL} from "~/types/data-types"
 import ERObject from "~/model/entity_relation/object"
 import Attribute from "~/model/entity_relation/attribute"
 import Relationship from "~/model/entity_relation/relationship"
@@ -57,20 +57,26 @@ export default class diagramView extends Vue {
   name = 'diagramView'
   diagram: diagramSQL | null = null
   objects: objectSQL[] = []
+  relates: relatesSQL[] = []
   nodes: ERObject[] = []
 
   infoOpen = false
 
   mounted() {
     get(`/api/d/${this.$route.params.did}`).then(res => this.diagram = res.diagram)
-    get(`/api/d/${this.$route.params.did}/o`).then(res => this.objects = res.objects)
+    Promise.all([
+      get(`/api/d/${this.$route.params.did}/o`),
+      get(`/api/d/${this.$route.params.did}/r`)
+    ]).then((res) => {
+      this.relates = res[1].relates
+      this.objects = res[0].objects
+    })
   }
 
   @Watch('objects')
   onObjectChanged(objects: objectSQL[]) {
     //
     objects.filter(o => o.type !== 'attribute').forEach((sqlO) => {
-      console.log(sqlO)
       const o = sqlO as objectSQL & attributeSQL & specializationSQL
       let no
       this.nodes.push(no = new (this.getType(o.type))({
@@ -102,16 +108,25 @@ export default class diagramView extends Vue {
         _parent: a.O1_id || ''
       }))
     })
-    attributes.forEach((o: ERObject) => {
-      (o as Attribute).parent = this.nodes.find(n => n.id === (o as Attribute)._parent) ||
-        attributes.find(n => n.id === (o as Attribute)._parent)
-      if (!(o as Attribute).parent) {
-        console.log(o.name, (o as Attribute)._parent)
-      }
-      (o as Attribute).parent?.attributes.push(o as Attribute)
-    })
+    const parents = [...this.nodes, ...attributes]
+    attributes.forEach((o: ERObject) =>
+      (o as Attribute).setParent(parents.find(n => n.id === (o as Attribute)._parent) ||
+        attributes.find(n => n.id === (o as Attribute)._parent))?.attributes.push(o as Attribute))
 
-    console.log(this.nodes)
+    this.relates.forEach((o) => {
+      const r = this.nodes.find(n => n.id === o.O1_id) as Relationship
+      const oo = this.nodes.find(n => n.id === o.O2_id)
+      if (!r || !oo) return console.log(o)
+      r.addRelation({
+        cardinality: o.cardinality,
+        entity: oo,
+        index: 0,
+        role: o.role,
+        total: o.total,
+        dupeCount: 0,
+        uniqueIndex: 0
+      })
+    })
   }
 
   getType(type: ObjectType) {

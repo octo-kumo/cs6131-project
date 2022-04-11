@@ -41,6 +41,7 @@ export default class ERObject extends Vector {
   }
 
   prepaint(ctx: CanvasRenderingContext2D) {
+    this._trueWidth = this.updateTrueWidth(ctx)
     this.attributes.forEach(a => a.predraw(ctx))
   }
 
@@ -55,21 +56,21 @@ export default class ERObject extends Vector {
       shape.draw(ctx)
     } else {
       this.drawShape(ctx, this.getShape())
-      this._trueWidth = Math.max(WIDTH, ctx.measureText(this.name).width * 1.05)
       if (this.weak) this.drawShape(ctx, this.getShape(this._trueWidth - 6, HEIGHT - 6))
     }
     ctx.stroke()
   }
 
   getShape(width?: number, height?: number): Shape {
-    if (width && height)
-      return new Rectangle2D(-width / 2, -height / 2, width, height)
-    else {
-      return this.getShape(this._trueWidth, HEIGHT)
-    }
+    if (width && height) return new Rectangle2D(-width / 2, -height / 2, width, height)
+    else return this.getShape(this._trueWidth, HEIGHT)
   }
 
   getShapeWorld(): Shape {
     return this.getShape().translated(this.x, this.y)
+  }
+
+  updateTrueWidth(ctx: CanvasRenderingContext2D) {
+    return Math.max(WIDTH, ctx.measureText(this.name).width * 1.05)
   }
 }

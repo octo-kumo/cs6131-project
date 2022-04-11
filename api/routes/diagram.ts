@@ -24,8 +24,8 @@ diagrams.get('/:did', (req, res) => {
 diagrams.get('/:did/o', (req, res) => {
   database().query(`SELECT *
                     FROM eviler.object
-                           natural left join eviler.attribute a
-                           natural left join eviler.specialization s
+                           natural left join eviler.attribute
+                           natural left join eviler.specialization
                     WHERE object.did = ${escape(req.params.did)};`).then((results: any) => {
     res.json({status: "success", objects: results})
   }).catch(error => res.json({status: "failed", error}))

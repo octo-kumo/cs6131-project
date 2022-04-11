@@ -100,12 +100,12 @@ export interface objectSQL {
 }
 
 export interface relatesSQL {
-  'cardinality': string | null;
+  'cardinality'?: string;
   'O1_did': string;
   'O1_id': string;
   'O2_did': string;
   'O2_id': string;
-  'role': string | null;
+  'role'?: string;
   'total': boolean;
 }
 
