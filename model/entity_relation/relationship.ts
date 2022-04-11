@@ -47,9 +47,8 @@ export default class Relationship extends ERObject {
   }
 
   drawShape(ctx: CanvasRenderingContext2D, shape?: Shape) {
-    if (shape) {
-      super.drawShape(ctx, shape)
-    } else {
+    if (shape) super.drawShape(ctx, shape)
+    else {
       this.drawShape(ctx, this.getShape())
       this._trueWidth = Math.max(WIDTH, ctx.measureText(this.name).width * 1.05)
       if (this.weak) this.drawShape(ctx, this.getShape(this._trueWidth - 15, HEIGHT - 6))

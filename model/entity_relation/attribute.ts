@@ -37,6 +37,9 @@ export default class Attribute extends ERObject {
       if (this.derived) shape.dashed(ctx)
       else shape.draw(ctx)
     } else super.drawShape(ctx)
+    ctx.fillStyle = "#fff"
+    ctx.fill()
+    ctx.fillStyle = "#000"
     ctx.stroke()
   }
 

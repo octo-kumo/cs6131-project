@@ -58,6 +58,9 @@ export default class ERObject extends Vector {
       this.drawShape(ctx, this.getShape())
       if (this.weak) this.drawShape(ctx, this.getShape(this._trueWidth - 6, HEIGHT - 6))
     }
+    ctx.fillStyle = "#fff"
+    ctx.fill()
+    ctx.fillStyle = "#000"
     ctx.stroke()
   }
 

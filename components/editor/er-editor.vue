@@ -64,10 +64,8 @@ export default class EREditor extends Vue {
     if (!ctx) return
     this.setupCanvas(this.editor, ctx, window.innerWidth, window.innerHeight)
     ctx.save()
-    this.nodes.forEach((n) => {
-      n.predraw(ctx)
-      n.draw(ctx)
-    })
+    this.nodes.forEach(n => n.predraw(ctx))
+    this.nodes.forEach(n => n.draw(ctx))
     this.calculateFPS()
     requestAnimationFrame(() => this.paint())
   }
@@ -93,7 +91,7 @@ export default class EREditor extends Vue {
     ctx.fillText(`FPS: ${this.fps.toFixed(2)}`, 10, 80)
     ctx.fillText(`Scale: ${this.scale.toFixed(2)}`, 10, 90)
     ctx.fillText(`Origin: ${this.origin.x.toFixed(2)}, ${this.origin.y.toFixed(2)}`, 10, 100)
-    ctx.fillText(`PX Ratio: ${this.ratio}`, 10, 110)
+    ctx.fillText(`Screen: (${window.innerWidth}, ${window.innerHeight}) x${this.ratio}→ (${ctx.canvas.width}, ${ctx.canvas.height})`, 10, 110)
     ctx.fillText(`Entities: ${this.nodes.length}`, 10, 120)
     ctx.fillText(`state = ${this.mouseState}`, 10, 140)
   }

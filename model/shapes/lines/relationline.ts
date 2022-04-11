@@ -26,7 +26,9 @@ export class RelationLine extends Line {
     const b = this.getEnd()
     if (this.r.total) {
       fancyLine(ctx, a, b, 'straight')
+      ctx.fillStyle = "#fff"
       ctx.fill()
+      ctx.fillStyle = "#000"
       fancyLine(ctx, a, b, 'straight')
       ctx.stroke()
     } else fancyLine(ctx, a, b, 'straight')

@@ -33,6 +33,10 @@ export default class Specialization extends Relationship {
         // if (ctx.context.exporting()) return;
         shape.dashed(ctx)
       } else shape.draw(ctx)
+      ctx.fillStyle = "#fff"
+      ctx.fill()
+      ctx.fillStyle = "#000"
+      ctx.stroke()
     } else this.drawShape(ctx, this.getShape())
   }
 
