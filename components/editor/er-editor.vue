@@ -17,6 +17,10 @@ import {Component, Model, Ref, Vue} from 'nuxt-property-decorator'
 import ERObject from "~/model/entity_relation/object"
 import Vector from "~/model/entity_relation/vector"
 
+function flatten(nodes: ERObject[]): ERObject[] {
+  return [...nodes, ...nodes.flatMap(n => flatten(n.attributes))]
+}
+
 function PIXEL_RATIO() {
   const ctx: any = document.createElement("canvas").getContext("2d")
   const dpr = window.devicePixelRatio || 1
@@ -54,6 +58,8 @@ export default class EREditor extends Vue {
   panStart = new Vector({})
   mouseStart = new Vector({})
 
+  selected: ERObject | null = null
+
   mounted() {
     this.ratio = PIXEL_RATIO()
     this.paint()
@@ -66,6 +72,13 @@ export default class EREditor extends Vue {
     ctx.save()
     this.nodes.forEach(n => n.predraw(ctx))
     this.nodes.forEach(n => n.draw(ctx))
+
+    if (this.selected) {
+      ctx.strokeStyle = '#f00'
+      this.selected.getShapeWorld().draw(ctx)
+      ctx.strokeStyle = '#000'
+    }
+
     this.calculateFPS()
     requestAnimationFrame(() => this.paint())
   }
@@ -94,6 +107,7 @@ export default class EREditor extends Vue {
     ctx.fillText(`Screen: (${window.innerWidth}, ${window.innerHeight}) x${this.ratio}→ (${ctx.canvas.width}, ${ctx.canvas.height})`, 10, 110)
     ctx.fillText(`Entities: ${this.nodes.length}`, 10, 120)
     ctx.fillText(`state = ${this.mouseState}`, 10, 140)
+    if (this.selected) ctx.fillText(`selected = ${this.selected}`, 10, 150)
   }
 
   calculateFPS() {
@@ -114,9 +128,26 @@ export default class EREditor extends Vue {
     this.mousePos.set(e.x, e.y)
     this.mouseWorld.set(this.unproject(this.mousePos))
     if (e.button === LEFT_BUTTON) {
-      this.mouseState = "empty"
-      this.panStart.set(this.origin)
-      this.mouseStart.set(this.mousePos)
+      if (this.selected) {
+        this.selected.highlight = false
+        this.selected = null
+      }
+      const flat = flatten(this.nodes)
+      for (const e1 of flat) {
+        if (e1.getShapeWorld().contains(this.mouseWorld)) {
+          (this.selected = e1).highlight = true
+          break
+        }
+      }
+
+      if (!this.selected) {
+        this.mouseState = "empty"
+        this.panStart.set(this.origin)
+        this.mouseStart.set(this.mousePos)
+      } else {
+        this.mouseState = "dragging"
+        this.mouseStart.set(this.mouseWorld.minus(this.selected))
+      }
     }
   }
 
@@ -130,6 +161,8 @@ export default class EREditor extends Vue {
     this.mouseWorld.set(this.unproject(this.mousePos))
     if (this.mouseState === "empty") { // Pan camera
       this.origin.set(this.panStart.add(this.mousePos.minus(this.mouseStart).div(this.scale)))
+    } else if (this.mouseState === "dragging" && this.selected) {
+      this.selected.set(this.mouseWorld.minus(this.mouseStart))
     }
     // console.log("move", e)
   }

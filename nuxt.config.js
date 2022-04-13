@@ -1,3 +1,5 @@
+import io from './io.config'
+
 export default {
   /*
   ** Nuxt target
@@ -65,8 +67,11 @@ export default {
   */
   modules: [
     // Doc: https://http.nuxtjs.org
-    '@nuxt/http'
+    '@nuxt/http',
+    '@nuxtjs/tailwindcss',
+    'nuxt-socket-io'
   ],
+  io,
 
   /*
   ** Server Middleware

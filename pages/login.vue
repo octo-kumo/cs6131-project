@@ -4,77 +4,81 @@
     class="max-w-md mx-auto bg-slate-100 rounded-xl border-2 p-4 mt-2"
     @submit.prevent="loginSubmit()"
   >
-    <h1 class="text-center text-2xl">
-      Login
-    </h1>
-    <div class="grid grid-cols-2 m-2">
-      <label class="text-right px-4">Email</label>
-      <input v-model="email" name="email" placeholder="user@example.com" required>
-    </div>
-    <div class="grid grid-cols-2 m-2">
-      <label class="text-right px-4">Password</label>
-      <input
-        v-model="password"
-        name="password"
-        type="password"
-        minlength="8"
-        placeholder="Password"
-        required
-      >
-    </div>
-    <div class="grid grid-cols-2 gap-4">
-      <button class="btn" @click="isLogin=false">
-        Register
-      </button>
-      <button class="btn success" type="submit">
+    <fieldset :disabled="disabled">
+      <h1 class="text-center text-2xl">
         Login
-      </button>
-    </div>
-  </form>
-  <form v-else class="max-w-md mx-auto my-2 bg-slate-100 rounded-xl border-2 p-4" @submit.prevent="registerSubmit()">
-    <h1 class="text-center text-2xl">
-      Register
-    </h1>
-    <div class="grid grid-cols-2 m-2">
-      <label class="text-right px-4">Name</label>
-      <input v-model="name" name="name" placeholder="Your Name" required>
-    </div>
-    <div class="grid grid-cols-2 m-2">
-      <label class="text-right px-4">Email</label>
-      <input v-model="email" name="email" placeholder="user@example.com" required>
-    </div>
-    <div class="grid grid-cols-2 m-2">
-      <label class="text-right px-4">Password</label>
-      <input
-        v-model="password"
-        name="password"
-        type="password"
-        minlength="8"
-        placeholder="Password"
-        required
-      >
-    </div>
-    <div class="grid grid-cols-2 m-2">
-      <label class="text-right px-4">Repeat</label>
-      <input
-        v-model="rpassword"
-        name="password"
-        type="password"
-        minlength="8"
-        placeholder="Repeat Password"
-        required
-      >
-    </div>
-    <div class="grid m-2">
+      </h1>
+      <div class="grid grid-cols-2 m-2">
+        <label class="text-right px-4">Email</label>
+        <input v-model="email" name="email" placeholder="user@example.com" required>
+      </div>
+      <div class="grid grid-cols-2 m-2">
+        <label class="text-right px-4">Password</label>
+        <input
+          v-model="password"
+          name="password"
+          type="password"
+          minlength="8"
+          placeholder="Password"
+          required
+        >
+      </div>
       <div class="grid grid-cols-2 gap-4">
-        <button class="btn" @click="isLogin=true">
-          Login
-        </button>
-        <button class="btn success" type="submit">
+        <button class="btn" @click="isLogin=false">
           Register
         </button>
+        <button class="btn success" type="submit">
+          Login
+        </button>
       </div>
-    </div>
+    </fieldset>
+  </form>
+  <form v-else class="max-w-md mx-auto my-2 bg-slate-100 rounded-xl border-2 p-4" @submit.prevent="registerSubmit()">
+    <fieldset :disabled="disabled">
+      <h1 class="text-center text-2xl">
+        Register
+      </h1>
+      <div class="grid grid-cols-2 m-2">
+        <label class="text-right px-4">Name</label>
+        <input v-model="name" name="name" placeholder="Your Name" required>
+      </div>
+      <div class="grid grid-cols-2 m-2">
+        <label class="text-right px-4">Email</label>
+        <input v-model="email" name="email" placeholder="user@example.com" required>
+      </div>
+      <div class="grid grid-cols-2 m-2">
+        <label class="text-right px-4">Password</label>
+        <input
+          v-model="password"
+          name="password"
+          type="password"
+          minlength="8"
+          placeholder="Password"
+          required
+        >
+      </div>
+      <div class="grid grid-cols-2 m-2">
+        <label class="text-right px-4">Repeat</label>
+        <input
+          v-model="rpassword"
+          name="password"
+          type="password"
+          minlength="8"
+          placeholder="Repeat Password"
+          required
+        >
+      </div>
+      <div class="grid m-2">
+        <div class="grid grid-cols-2 gap-4">
+          <button class="btn" @click="isLogin=true">
+            Login
+          </button>
+          <button class="btn success" type="submit">
+            Register
+          </button>
+        </div>
+      </div>
+    </fieldset>
   </form>
 </template>
 
@@ -90,6 +94,8 @@ export default class login extends Vue {
   password = ""
   rpassword = ""
 
+  disabled = false
+
   get user() {
     return this.$store.state.user
   }
@@ -100,6 +106,8 @@ export default class login extends Vue {
   }
 
   loginSubmit() {
+    if (this.disabled) return
+    this.disabled = true
     fetch("/api/auth/login", {
       method: "POST",
       body: JSON.stringify({email: this.email, password: this.password}),
@@ -112,10 +120,12 @@ export default class login extends Vue {
         console.log("success")
         this.$store.dispatch("populate")
       } else alert(res.error)
-    })
+    }).finally(() => this.disabled = false)
   }
 
   registerSubmit() {
+    if (this.disabled) return
+    this.disabled = true
     if (this.rpassword !== this.password) return alert("Password mismatch")
     fetch("/api/auth/register", {
       method: "POST",
@@ -133,7 +143,7 @@ export default class login extends Vue {
         this.isLogin = true
         alert("Please login")
       } else alert(res.error)
-    })
+    }).finally(() => this.disabled = false)
   }
 }
 </script>

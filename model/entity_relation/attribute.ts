@@ -71,12 +71,29 @@ export default class Attribute extends ERObject {
   }
 
   setParent(parent?: ERObject) {
-    if (this.parent) this.incre(this.parent)
-    if (parent) this.decre(parent)
-    return this.parent = parent
+    const pos = this.copy()
+    this.parent = parent
+    this.set(pos)
+    return this.parent
   }
 
   updateTrueWidth(ctx: CanvasRenderingContext2D) {
     return Math.max(WIDTH * 0.7, ctx.measureText(this.name).width * 1.05)
+  }
+
+  get y(): number {
+    return this._y + (this.parent?.y ?? 0)
+  }
+
+  set y(value: number) {
+    this._y = value - (this.parent?.y ?? 0)
+  }
+
+  get x(): number {
+    return this._x + (this.parent?.x ?? 0)
+  }
+
+  set x(value: number) {
+    this._x = value - (this.parent?.x ?? 0)
   }
 }

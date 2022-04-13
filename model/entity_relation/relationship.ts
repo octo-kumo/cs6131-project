@@ -2,6 +2,7 @@ import ERObject, {HEIGHT, ObjectParams, WIDTH} from '@/model/entity_relation/obj
 import Entity from '@/model/entity_relation/entity'
 import {drawLine, Shape} from "~/model/shapes/shape"
 import {Diamond} from "~/model/shapes/diamond"
+import {RelationLine} from "~/model/shapes/lines/relationline";
 
 export type RelationParam = ObjectParams
 
@@ -18,6 +19,7 @@ export interface Relation {
 
 export default class Relationship extends ERObject {
   relations: Relation[] = []
+  lines: RelationLine[] = []
 
   addRelation(relation: Relation) {
     this.relations.push(relation)
@@ -25,20 +27,22 @@ export default class Relationship extends ERObject {
   }
 
   revalidate() {
-    const map = new Map<Entity, number>()
+    const map = new Map<string, number>()
     for (let i = 0; i < this.relations.length; i++) {
       const r = this.relations[i]
       r.index = i
-      map.set(r.entity, (r.uniqueIndex = (map.get(r.entity) ?? 0)) + 1)
+      map.set(r.entity.id, (r.uniqueIndex = (map.get(r.entity.id) ?? 0)) + 1)
     }
     for (let i = 0; i < this.relations.length; i++) {
-      this.relations[i].dupeCount = map.get(this.relations[i].entity) ?? 0
+      this.relations[i].dupeCount = map.get(this.relations[i].entity.id) ?? 0
+      this.lines[i] = new RelationLine({a: this, b: this.relations[i].entity, r: this.relations[i]})
     }
   }
 
   predraw(ctx: CanvasRenderingContext2D) {
     super.predraw(ctx)
-    this.relations.forEach(r => predraw(ctx, this, r))
+    this.lines.forEach(l => l.predraw(ctx))
+    this.lines.forEach(l => l.draw(ctx))
   }
 
   getShape(width?: number, height?: number): Shape {

@@ -43,21 +43,22 @@
 import {Component, Vue, Watch} from 'nuxt-property-decorator'
 import {get} from "~/plugins/api"
 import ErEditor from "~/components/editor/er-editor.vue"
-import {attributeSQL, diagramSQL, objectSQL, ObjectType, relatesSQL, specializationSQL} from "~/types/data-types"
+import {attributeEntity, diagramEntity, objectEntity, relatesEntity, specializationEntity} from "~/types/data-types"
 import ERObject from "~/model/entity_relation/object"
 import Attribute from "~/model/entity_relation/attribute"
 import Relationship from "~/model/entity_relation/relationship"
 import Entity from "~/model/entity_relation/entity"
 import Specialization from "~/model/entity_relation/specialization"
+import {ObjectType} from "~/types/types";
 
 @Component({
   components: {ErEditor}
 })
 export default class diagramView extends Vue {
   name = 'diagramView'
-  diagram: diagramSQL | null = null
-  objects: objectSQL[] = []
-  relates: relatesSQL[] = []
+  diagram: diagramEntity | null = null
+  objects: objectEntity[] = []
+  relates: relatesEntity[] = []
   nodes: ERObject[] = []
 
   infoOpen = false
@@ -74,10 +75,10 @@ export default class diagramView extends Vue {
   }
 
   @Watch('objects')
-  onObjectChanged(objects: objectSQL[]) {
+  onObjectChanged(objects: objectEntity[]) {
     //
     objects.filter(o => o.type !== 'attribute').forEach((sqlO) => {
-      const o = sqlO as objectSQL & attributeSQL & specializationSQL
+      const o = sqlO as objectEntity & attributeEntity & specializationEntity
       let no
       this.nodes.push(no = new (this.getType(o.type))({
         id: o.id,
@@ -95,8 +96,8 @@ export default class diagramView extends Vue {
       }
     })
     const attributes: Attribute[] = []
-    objects.filter(o => o.type === 'attribute').forEach((o: objectSQL) => {
-      const a = o as attributeSQL & objectSQL
+    objects.filter(o => o.type === 'attribute').forEach((o: objectEntity) => {
+      const a = o as attributeEntity & objectEntity
       attributes.push(new Attribute({
         id: a.id,
         name: a.name,
@@ -105,7 +106,7 @@ export default class diagramView extends Vue {
         weak: a.outlined,
         derived: a.isDerived,
         key: a.isKey,
-        _parent: a.O1_id || ''
+        _parent: a.pid || ''
       }))
     })
     const parents = [...this.nodes, ...attributes]
@@ -114,11 +115,11 @@ export default class diagramView extends Vue {
         attributes.find(n => n.id === (o as Attribute)._parent))?.attributes.push(o as Attribute))
 
     this.relates.forEach((o) => {
-      const r = this.nodes.find(n => n.id === o.O1_id) as Relationship
-      const oo = this.nodes.find(n => n.id === o.O2_id)
+      const r = this.nodes.find(n => n.id === o.rid) as Relationship
+      const oo = this.nodes.find(n => n.id === o.oid)
       if (!r || !oo) return console.log(o)
       r.addRelation({
-        cardinality: o.cardinality,
+        cardinality: o.cardinality ?? undefined,
         entity: oo,
         index: 0,
         role: o.role,
@@ -126,6 +127,7 @@ export default class diagramView extends Vue {
         dupeCount: 0,
         uniqueIndex: 0
       })
+      r.revalidate()
     })
   }
 

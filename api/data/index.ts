@@ -12,7 +12,6 @@ export async function init() {
     password: 'admin'
   })
   console.log('connected to sql server...')
-  await db.query('DROP DATABASE IF EXISTS evilEr;')
   await db.query('CREATE DATABASE IF NOT EXISTS evilEr;')
   await db.query('use evilEr;')
   const length = (await db.query('show tables;')).length
@@ -21,7 +20,10 @@ export async function init() {
     await run('init.sql')
     await run('queries.sql')
     await run('populate.sql')
-    await run('er_eviler.sql')
+    await run('user_system.sql')
+    for (const exmp of fs.readdirSync(path.join(__dirname, 'examples'))) {
+      await run('examples/' + exmp)
+    }
   }
 }
 

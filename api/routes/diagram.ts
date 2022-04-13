@@ -34,8 +34,7 @@ diagrams.get('/:did/o', (req, res) => {
 diagrams.get('/:did/r', (req, res) => {
   database().query(`SELECT *
                     FROM eviler.relates
-                    WHERE O1_did = ${escape(req.params.did)}
-                      AND O2_did = ${escape(req.params.did)};`).then((results: any) => {
+                    WHERE did = ${escape(req.params.did)};`).then((results: any) => {
     res.json({status: "success", relates: results})
   }).catch(error => res.json({status: "failed", error}))
 })

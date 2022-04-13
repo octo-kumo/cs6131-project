@@ -3,7 +3,6 @@ import ERObject from "~/model/entity_relation/object"
 import {Relation} from "~/model/entity_relation/relationship"
 import {fancyLine} from "~/model/shapes/lines/fancyline"
 import Vector, {alwaysUp} from "~/model/entity_relation/vector"
-import {Shape} from "~/model/shapes/shape";
 
 export interface RelationLineParam {
   a: ERObject;
@@ -20,19 +19,31 @@ export class RelationLine extends Line {
     this.r = r
   }
 
-  draw(ctx: CanvasRenderingContext2D) {
+  predraw(ctx: CanvasRenderingContext2D) {
     this.setNormal()
     const a = this.getStart()
     const b = this.getEnd()
     if (this.r.total) {
-      fancyLine(ctx, a, b, 'straight')
-      ctx.fillStyle = "#fff"
-      ctx.fill()
-      ctx.fillStyle = "#000"
+      ctx.lineWidth = 4
       fancyLine(ctx, a, b, 'straight')
       ctx.stroke()
-    } else fancyLine(ctx, a, b, 'straight')
 
+      ctx.lineWidth = 3
+      ctx.strokeStyle = "#fff"
+      fancyLine(ctx, a, b, 'straight')
+      ctx.stroke()
+      ctx.strokeStyle = "#000"
+      ctx.lineWidth = 1
+    } else {
+      fancyLine(ctx, a, b, 'straight')
+      ctx.stroke()
+    }
+  }
+
+  draw(ctx: CanvasRenderingContext2D) {
+    this.setNormal()
+    const a = this.getStart()
+    const b = this.getEnd()
     const d = b.minus(a)
     const c = a.add(b).div(2)
     if (this.r.role) {
@@ -41,6 +52,12 @@ export class RelationLine extends Line {
       ctx.save()
       ctx.translate(mid.x, mid.y)
       ctx.rotate(angle)
+      ctx.fillStyle = "#fff"
+      const metrics = ctx.measureText(this.r.role)
+      const w = metrics.width
+      const h = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent
+      ctx.fillRect(-w / 2, -h / 2, w, h)
+      ctx.fillStyle = "#000"
       ctx.fillText(this.r.role, 0, 0)
       ctx.restore()
     }
@@ -54,15 +71,11 @@ export class RelationLine extends Line {
   }
 
   getStart() {
-    return this.r.uniqueIndex === 0
-      ? (this.r.dupeCount ?? 0) % 2 === 0 ? this.a.minus(this.normal.multi(0.5)) : this.a
-      : this.a.add(this.normal.multi(this.bouncingIndex(this.r.uniqueIndex ?? 0) + ((this.r.dupeCount ?? 0) % 2 === 0 ? -0.5 : 0)))
+    return this.a.add(this.normal.multi(this.bouncingIndex(this.r.uniqueIndex ?? 0) + ((this.r.dupeCount ?? 0) % 2 === 0 ? -0.5 : 0)))
   }
 
   getEnd() {
-    return this.r.uniqueIndex === 0
-      ? (this.r.dupeCount ?? 0) % 2 === 0 ? this.b.minus(this.normal.multi(0.5)) : this.b
-      : this.b.add(this.normal.multi(this.bouncingIndex(this.r.uniqueIndex ?? 0) + ((this.r.dupeCount ?? 0) % 2 === 0 ? -0.5 : 0)))
+    return this.b.add(this.normal.multi(this.bouncingIndex(this.r.uniqueIndex ?? 0) + ((this.r.dupeCount ?? 0) % 2 === 0 ? -0.5 : 0)))
   }
 
   setNormal() {
@@ -70,6 +83,6 @@ export class RelationLine extends Line {
   }
 
   bouncingIndex(i: number) {
-    return i % 2 === 0 ? -i / 2 : i / 2 + 1
+    return i % 2 === 0 ? -Math.floor(i / 2) : Math.floor(i / 2) + 1
   }
 }

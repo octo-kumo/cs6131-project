@@ -18,6 +18,7 @@ export default class ERObject extends Vector {
   weak: boolean
 
   attributes: Attribute[] = []
+  highlight = false
 
   constructor({id, name, weak, x, y}: ObjectParams) {
     super({x, y})
@@ -28,14 +29,14 @@ export default class ERObject extends Vector {
 
   predraw(ctx: CanvasRenderingContext2D) {
     ctx.save()
-    ctx.translate(this.x, this.y)
+    ctx.translate(this._x, this._y)
     this.prepaint(ctx)
     ctx.restore()
   }
 
   draw(ctx: CanvasRenderingContext2D) {
     ctx.save()
-    ctx.translate(this.x, this.y)
+    ctx.translate(this._x, this._y)
     this.paint(ctx)
     ctx.restore()
   }
@@ -46,6 +47,7 @@ export default class ERObject extends Vector {
   }
 
   paint(ctx: CanvasRenderingContext2D) {
+    this._trueWidth = this.updateTrueWidth(ctx)
     this.attributes.forEach(a => a.draw(ctx))
     this.drawShape(ctx)
     ctx.fillText(this.name, 0, 0)
@@ -75,5 +77,9 @@ export default class ERObject extends Vector {
 
   updateTrueWidth(ctx: CanvasRenderingContext2D) {
     return Math.max(WIDTH, ctx.measureText(this.name).width * 1.05)
+  }
+
+  toString() {
+    return `[${this.name} ${super.toString()}]`
   }
 }

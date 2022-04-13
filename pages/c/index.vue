@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="max-w-3xl mx-auto p-2">
     <h1 class="text-2xl">
       Containers
     </h1>

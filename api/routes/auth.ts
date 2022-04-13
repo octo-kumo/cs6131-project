@@ -2,19 +2,13 @@ import {Router} from 'express'
 import {escape} from "sqlstring"
 import {validate} from 'email-validator'
 import database from '../data'
+import {requireAuth} from "../utils"
 
 const auth = Router({
   mergeParams: true
 })
-auth.get('/', (req, res) => {
-  if (req.session.user) {
-    res.json({status: "success", user: req.session.user})
-  } else {
-    res.json({
-      status: "failed",
-      error: "not logged in"
-    })
-  }
+auth.get('/', requireAuth, (req, res) => {
+  res.json({status: "success", user: req.session.user})
 })
 auth.post('/login', (req, res) => {
   database().query(`call login(${escape(req.body.email)}, ${escape(req.body.password)});`).then((results: any) => {
@@ -30,7 +24,7 @@ auth.post('/login', (req, res) => {
     res.json({status: "failed", error: e})
   })
 })
-auth.post('/profile', (req, res) => {
+auth.post('/profile', requireAuth, (req, res) => {
   if (req.body.npassword && String(req.body.npassword).length < 8) return res.json({
     status: 'failed',
     error: "Password too short"
@@ -76,7 +70,7 @@ auth.post('/logout', (req, res) => {
   })
 })
 
-auth.get('/users', (req, res) => {
+auth.get('/users', requireAuth, (req, res) => {
   database().query('select * from eviler.vusers;').then((results: any) => {
     console.log('The result is: ', results)
     res.json({status: "success", users: results})

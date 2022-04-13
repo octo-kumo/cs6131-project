@@ -7,6 +7,7 @@ import auth from "./routes/auth"
 import users from "./routes/users"
 import containers from "./routes/container"
 import diagrams from "./routes/diagram"
+import n from "./routes/new"
 
 // Create express instance
 init().then(() => db())
@@ -20,11 +21,12 @@ app.use(session({
 }))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded())
-app.get('/hello', (req, res) => res.end('world'))
+
+app.use('/auth', auth)
+app.use('/u', users)
 app.use('/c', containers)
 app.use('/d', diagrams)
-app.use('/u', users)
-app.use('/auth', auth)
+app.use('/n', n)
 
 // Export express app
 module.exports = {

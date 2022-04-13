@@ -1,4 +1,5 @@
 import {Shape} from "~/model/shapes/shape"
+import Vector from "~/model/entity_relation/vector"
 
 export class Diamond extends Shape {
   x: number
@@ -26,5 +27,11 @@ export class Diamond extends Shape {
 
   translated(x: number, y: number): Shape {
     return new Diamond(x + this.x, y + this.y, this.width, this.height)
+  }
+
+  contains(point: Vector): boolean {
+    const X = this.x + this.width / 2 - point.x
+    const Y = this.y + this.height / 2 - point.y
+    return Math.max(Math.abs(X / this.width + Y / this.height), Math.abs(X / this.width - Y / this.height)) < 0.5
   }
 }

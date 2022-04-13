@@ -49,14 +49,16 @@
       class="transform top-0 left-0 w-64 bg-white fixed h-full overflow-auto ease-in-out transition-all duration-300 z-30"
       :class="isOpen ? 'translate-x-0' : '-translate-x-full'"
     >
-      <div class="mx-2">
-        <h1 class="font-bold text-2xl">
-          Evil ER
-        </h1>
-        <h6 class="uppercase font-thin text-xs -mt-1">
-          Entity Relationship Diagrams
-        </h6>
-      </div>
+      <nuxt-link to="/">
+        <div class="px-2 hover:bg-gray-100">
+          <h1 class="font-bold text-2xl">
+            Evil ER
+          </h1>
+          <h6 class="uppercase font-thin text-xs -mt-1">
+            Entity Relationship Diagrams
+          </h6>
+        </div>
+      </nuxt-link>
       <hr class="my-1">
       <div class="user-profile mx-2 mb-2 rounded flex overflow-hidden hover:bg-gray-100">
         <img class="w-16 h-16 object-cover" :src="(user&&user.pfp)||'/images/guest.png'" alt="avatar">
@@ -90,9 +92,9 @@
       </div>
       <hr class="my-1">
       <div class="mx-2 my-1">
-        <h1 class="text-lg px-2">
+        <nuxt-link to="/c" class="text-lg px-2" active-class="text-blue-500" exact>
           Containers
-        </h1>
+        </nuxt-link>
         <ul>
           <li v-for="(c,i) in containers" :key="i" class="w-full p-0.5">
             <nuxt-link

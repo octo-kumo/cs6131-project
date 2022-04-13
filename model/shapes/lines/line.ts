@@ -29,6 +29,10 @@ export class Line extends Shape {
   translated(x: number, y: number): Shape {
     return new Line({a: this.a.add(x, y), b: this.b.add(x, y)})
   }
+
+  contains(point: Vector): boolean {
+    return false
+  }
 }
 
 export function lineUnderString(ctx: CanvasRenderingContext2D, text: string) {

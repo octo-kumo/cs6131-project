@@ -40,6 +40,15 @@ BEGIN
   VALUES (nme, eml, SHA1(password));#
 END;
 
+CREATE PROCEDURE createContainer(IN id CHAR(36), IN name CHAR(32), IN uid CHAR(36))
+BEGIN
+  INSERT INTO container (cid, name) VALUES (id, name);#
+  INSERT INTO editor (created, uid) VALUES (1, uid) ON DUPLICATE KEY UPDATE created=created + 1;#
+  INSERT INTO created_by (datetime, cid, uid) VALUES (now(), id, uid) ON DUPLICATE KEY UPDATE datetime=now();#
+  INSERT INTO can_edit (start_time, cid, uid) VALUES (now(), id, uid) ON DUPLICATE KEY UPDATE start_time=now();#
+  INSERT INTO can_view (start_time, cid, uid) VALUES (now(), id, uid) ON DUPLICATE KEY UPDATE start_time=now();#
+END;
+
 CREATE PROCEDURE addEntity(IN id CHAR(36), IN nme VARCHAR(32), IN eml VARCHAR(32), IN password VARCHAR(32))
 BEGIN
   INSERT INTO user (uid, name, email, pwd_hash)

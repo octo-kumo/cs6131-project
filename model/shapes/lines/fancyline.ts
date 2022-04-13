@@ -6,6 +6,7 @@ export function fancyLine(ctx: CanvasRenderingContext2D, a: Vector, b: Vector, s
   const s = a.add(b)
   const horizontal = Math.abs(d.y) < Math.abs(d.x)
   const mid = horizontal ? s.x / 2 : s.y / 2
+  ctx.beginPath()
   switch (style) {
     case 'straight':
       ctx.moveTo(a.x, a.y)
@@ -28,4 +29,5 @@ export function fancyLine(ctx: CanvasRenderingContext2D, a: Vector, b: Vector, s
       else ctx.bezierCurveTo(a.x, mid, b.x, mid, b.x, b.y)
       break
   }
+  ctx.closePath()
 }

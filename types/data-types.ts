@@ -1,96 +1,95 @@
-export interface adminSQL {
+import {ObjectType} from "~/types/types";
+
+export interface adminEntity {
   'retired': boolean;
   'start_time': Date | null;
   'uid': string;
 }
 
-export interface attributeSQL {
+export interface attributeEntity {
   'did': string;
   'id': string;
   'isDerived': boolean;
   'isKey': boolean;
-  'O1_did': string | null;
-  'O1_id': string | null;
+  'pid': string | null;
 }
 
-export interface canEditSQL {
-  'C1_cid': string;
-  'E1_uid': string;
+export interface can_editEntity {
+  'cid': string;
   'start_time': Date | null;
+  'uid': string;
 }
 
-export interface canViewSQL {
-  'C1_cid': string;
+export interface can_viewEntity {
+  'cid': string;
   'start_time': Date | null;
-  'U1_uid': string;
+  'uid': string;
 }
 
-export interface columnSQL {
+export interface columnEntity {
+  'did': string;
   'isKey': boolean;
   'name': string;
   'notNull': boolean;
   'param': string | null;
-  'T1_did': string;
-  'T1_name': string;
+  'r_name': string;
   'type': string | null;
 }
 
-export interface containerSQL {
+export interface containerEntity {
   'cid': string;
-  'name': string | null;
+  'name': string;
 }
 
-export interface createdBySQL {
-  'C1_cid': string;
+export interface created_byEntity {
+  'cid': string;
   'datetime': Date | null;
-  'U1_uid': string;
-}
-
-export interface diagramSQL {
-  'C1_cid': string | null;
-  'did': string;
-  'isEr': boolean;
-  'name': string | null;
-}
-
-export interface editorSQL {
-  'reputation': number | null;
   'uid': string;
 }
 
-export interface foreignSQL {
+export interface diagramEntity {
+  'cid': string;
+  'did': string;
+  'isEr': boolean;
+  'name': string;
+}
+
+export interface editorEntity {
+  'created'?: number;
+  'reputation'?: number;
+  'uid': string;
+}
+
+export interface foreignEntity {
+  'did': string;
+  'name': string;
+  'r_name': string;
   'required': boolean;
   'role': string | null;
-  'T1_did': string;
-  'T1_name': string;
-  'T2_did': string;
-  'T2_name': string;
 }
 
-export interface lastEditedBySQL {
-  'D1_did': string;
+export interface last_edited_byEntity {
   'datetime': Date | null;
-  'U1_uid': string;
+  'did': string;
+  'uid': string;
 }
 
-export interface lastViewSQL {
-  'D1_did': string;
+export interface last_viewEntity {
   'datetime': Date | null;
-  'U1_uid': string;
+  'did': string;
+  'uid': string;
 }
 
-export interface messageSQL {
-  'C1_cid': string;
-  'datetime': Date | null;
+export interface messageEntity {
+  'cid': string;
+  'datetime': Date;
   'mid': string;
-  'text': string | null;
-  'U1_uid': string;
+  'text': string;
+  'uid': string;
 }
 
-export type ObjectType = 'entity' | 'relationship' | 'attribute' | 'specialization';
-
-export interface objectSQL {
-  'D1_did': string;
+export interface objectEntity {
+  'did': string;
   'id': string;
   'name': string;
   'outlined': boolean;
@@ -99,43 +98,42 @@ export interface objectSQL {
   'y': number;
 }
 
-export interface relatesSQL {
-  'cardinality'?: string;
-  'O1_did': string;
-  'O1_id': string;
-  'O2_did': string;
-  'O2_id': string;
-  'role'?: string;
+export interface relatesEntity {
+  'cardinality': string;
+  'did': string;
+  'oid': string;
+  'rid': string;
+  'role': string;
   'total': boolean;
 }
 
-export interface specializationSQL {
+export interface specializationEntity {
   'did': string;
   'disjoint': boolean;
   'id': string;
 }
 
-export interface tableSQL {
-  'D1_did': string;
+export interface tableEntity {
+  'did': string;
   'name': string;
   'x': number;
   'y': number;
 }
 
-export interface userSQL {
-  'email': string | null;
+export interface userEntity {
+  'email': string;
   'isAdmin': boolean;
   'last_login': Date | null;
-  'name': string | null;
+  'name': string;
   'pfp': string | null;
-  'pwd_hash': string | null;
+  'pwd_hash': string;
   'uid'?: string;
 }
 
-export interface vusersSQL {
-  'email': string | null;
+export interface vusersEntity {
+  'email': string;
   'isAdmin': boolean;
-  'name': string | null;
+  'name': string;
   'pfp': string | null;
   'uid'?: string;
 }

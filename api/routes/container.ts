@@ -24,8 +24,19 @@ containers.get('/:cid', (req, res) => {
 containers.get('/:cid/d', (req, res) => {
   database().query(`SELECT *
                     FROM eviler.diagram
+                           NATURAL LEFT JOIN eviler.last_edited_by
                     WHERE cid = ${escape(req.params.cid)};`).then((results: any) => {
     res.json({status: "success", diagrams: results})
+  }).catch(error => res.json({status: "failed", error}))
+})
+
+containers.get('/:cid/c', (req, res) => {
+  database().query(`SELECT *
+                    FROM eviler.message
+                           LEFT JOIN eviler.user u on u.uid = message.uid
+                    WHERE cid = ${escape(req.params.cid)}
+                    ORDER BY datetime DESC;`).then((results: any) => {
+    res.json({status: "success", messages: results})
   }).catch(error => res.json({status: "failed", error}))
 })
 
