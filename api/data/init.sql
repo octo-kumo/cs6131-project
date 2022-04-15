@@ -172,57 +172,57 @@ CREATE TABLE IF NOT EXISTS last_view
 
 
 ALTER TABLE message
-  ADD foreign KEY (cid) REFERENCES container (cid),
-  ADD foreign KEY (uid) REFERENCES `user` (uid);
+  ADD foreign KEY (cid) REFERENCES container (cid) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD foreign KEY (uid) REFERENCES `user` (uid) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 ALTER TABLE diagram
-  ADD foreign KEY (cid) REFERENCES container (cid);
+  ADD foreign KEY (cid) REFERENCES container (cid) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE admin
-  ADD foreign KEY (uid) REFERENCES `user` (uid);
+  ADD foreign KEY (uid) REFERENCES `user` (uid) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE editor
-  ADD foreign KEY (uid) REFERENCES `user` (uid);
+  ADD foreign KEY (uid) REFERENCES `user` (uid) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE object
-  ADD foreign KEY (did) REFERENCES diagram (did);
+  ADD foreign KEY (did) REFERENCES diagram (did) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE attribute
-  ADD foreign KEY (pid, did) REFERENCES object (id, did),
-  ADD foreign KEY (id, did) REFERENCES object (id, did);
+  ADD foreign KEY (pid, did) REFERENCES object (id, did) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD foreign KEY (id, did) REFERENCES object (id, did) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE specialization
-  ADD foreign KEY (id, did) REFERENCES object (id, did);
+  ADD foreign KEY (id, did) REFERENCES object (id, did) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `table`
-  ADD foreign KEY (did) REFERENCES diagram (did);
+  ADD foreign KEY (did) REFERENCES diagram (did) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `column`
-  ADD foreign KEY (r_name, did) REFERENCES `table` (name, did);
+  ADD foreign KEY (r_name, did) REFERENCES `table` (name, did) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE can_edit
-  ADD foreign KEY (cid) REFERENCES container (cid),
-  ADD foreign KEY (uid) REFERENCES editor (uid);
+  ADD foreign KEY (cid) REFERENCES container (cid) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD foreign KEY (uid) REFERENCES editor (uid) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE can_view
-  ADD foreign KEY (cid) REFERENCES container (cid),
-  ADD foreign KEY (uid) REFERENCES `user` (uid);
+  ADD foreign KEY (cid) REFERENCES container (cid) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD foreign KEY (uid) REFERENCES `user` (uid) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE relates
-  ADD foreign KEY (rid, did) REFERENCES object (id, did);
+  ADD foreign KEY (rid, did) REFERENCES object (id, did) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE last_edited_by
-  ADD foreign KEY (did) REFERENCES diagram (did),
-  ADD foreign KEY (uid) REFERENCES `user` (uid);
+  ADD foreign KEY (did) REFERENCES diagram (did) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD foreign KEY (uid) REFERENCES `user` (uid) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE created_by
-  ADD foreign KEY (cid) REFERENCES container (cid),
-  ADD foreign KEY (uid) REFERENCES `user` (uid);
+  ADD foreign KEY (cid) REFERENCES container (cid) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD foreign KEY (uid) REFERENCES `user` (uid) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 ALTER TABLE `foreign`
-  ADD foreign KEY (r_name, did) REFERENCES `table` (name, did),
-  ADD foreign KEY (name, did) REFERENCES `table` (name, did);
+  ADD foreign KEY (r_name, did) REFERENCES `table` (name, did) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD foreign KEY (name, did) REFERENCES `table` (name, did) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE last_view
-  ADD foreign KEY (did) REFERENCES diagram (did),
-  ADD foreign KEY (uid) REFERENCES `user` (uid);
+  ADD foreign KEY (did) REFERENCES diagram (did) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD foreign KEY (uid) REFERENCES `user` (uid) ON DELETE CASCADE ON UPDATE CASCADE;

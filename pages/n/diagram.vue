@@ -35,7 +35,7 @@
       <button class="btn success" type="submit">
         Save
       </button>
-      <nuxt-link to="/c" class="btn danger">
+      <nuxt-link :to="`/c/${cid}`" class="btn danger">
         Cancel
       </nuxt-link>
     </div>
@@ -48,7 +48,7 @@ import {containerEntity} from "~/types/data-types"
 
 @Component
 export default class newDiagram extends Vue {
-  cid = ''
+  cid = this.$route.query.cid ?? ''
   id = ''
   name = ''
   type = 'er'

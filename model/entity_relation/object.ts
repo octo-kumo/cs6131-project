@@ -1,7 +1,7 @@
 import Vector, {VectorParams} from '@/model/entity_relation/vector'
 import Attribute from '@/model/entity_relation/attribute'
-import {Shape} from "~/model/shapes/shape"
-import {Rectangle2D} from "~/model/shapes/rectangle2d"
+import {Shape} from "@/model/shapes/shape"
+import {Rectangle2D} from "@/model/shapes/rectangle2d"
 
 export interface ObjectParams extends VectorParams {
   id: string;

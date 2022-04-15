@@ -2,6 +2,9 @@
   <canvas
     id="editor"
     ref="editor"
+    @drop.prevent="dropped"
+    @dragenter.prevent="checkDrop"
+    @dragover.prevent="checkDrop"
 
     @wheel="scrolled"
     @click="clicked"
@@ -15,10 +18,13 @@
 
 import {Component, Model, Prop, Ref, Vue} from 'nuxt-property-decorator'
 import {Socket} from "socket.io-client"
+import {uuid} from "uuidv4"
 import ERObject from "~/model/entity_relation/object"
 import Vector from "~/model/entity_relation/vector"
 import client from "~/socket/client"
 import {objectEntity} from "~/types/data-types"
+import {ObjectType} from "~/types/types"
+import {getType} from "~/model/entity_relation";
 
 function flatten(nodes: ERObject[]): ERObject[] {
   return [...nodes, ...nodes.flatMap(n => flatten(n.attributes))]
@@ -81,6 +87,10 @@ export default class EREditor extends Vue {
     })
     this.ratio = PIXEL_RATIO()
     this.paint()
+  }
+
+  unmounted() {
+    this.io?.disconnect()
   }
 
   paint() {
@@ -200,6 +210,27 @@ export default class EREditor extends Vue {
     this.scale *= Math.pow(0.9, e.deltaY / 300)
     const b = mouse.divide(this.scale)
     this.origin.incre(b.minus(a))
+  }
+
+  /**
+   * Dragging
+   */
+
+  checkDrop(e: DragEvent) {
+    // console.log(e, e.dataTransfer)
+  }
+
+  dropped(e: DragEvent) {
+    console.log(e, e.dataTransfer)
+    console.log(e.dataTransfer?.getData('type'))
+    const pos = this.unproject(new Vector({x: e.x, y: e.y}))
+    const obj = new (getType(e.dataTransfer?.getData('type') as ObjectType))({
+      id: uuid(),
+      x: pos.x,
+      y: pos.y,
+      name: "Unnamed"
+    })
+    this.nodes.push(obj)
   }
 
   unproject(vector: Vector) {

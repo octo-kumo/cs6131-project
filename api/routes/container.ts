@@ -21,6 +21,15 @@ containers.get('/:cid', (req, res) => {
   }).catch(error => res.json({status: "failed", error}))
 })
 
+containers.post('/:cid', (req, res) => {
+  database().query(`UPDATE evilEr.container
+                    SET cid  = ?,
+                        name = ?
+                    WHERE cid = ?;`, [req.body.cid, req.body.name, req.params.cid]).then(() => {
+    res.json({status: "success", container: req.body})
+  }).catch(error => res.json({status: "failed", error}))
+})
+
 containers.get('/:cid/d', (req, res) => {
   database().query(`SELECT *
                     FROM evilEr.diagram

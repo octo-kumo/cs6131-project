@@ -76,7 +76,7 @@ export default {
   serverMiddleware: {
     '/api': '~/api',
     '/socket.io': '~/api/socket'
-  },
+  }
 
   /*
   ** For deployment you might want to edit host and port
@@ -90,5 +90,5 @@ export default {
   ** Build configuration
   ** See https://nuxtjs.org/api/configuration-build/
   */
-  build: {}
+  // build: {}
 }

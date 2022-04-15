@@ -24,7 +24,7 @@
         >
       </div>
       <div class="grid grid-cols-2 gap-4">
-        <button class="btn" @click="isLogin=false">
+        <button class="btn" @click="isLogin=false" type="button">
           Register
         </button>
         <button class="btn success" type="submit">

@@ -21,6 +21,16 @@ diagrams.get('/:did', (req, res) => {
   }).catch(error => res.json({status: "failed", error}))
 })
 
+diagrams.post('/:did', (req, res) => {
+  database().query(`UPDATE evilEr.diagram
+                    SET did  = ?,
+                        cid  = ?,
+                        name = ?
+                    WHERE did = ?;`, [req.body.did, req.body.cid, req.body.name, req.params.did]).then(() => {
+    res.json({status: "success", diagram: req.body})
+  }).catch(error => res.json({status: "failed", error}))
+})
+
 diagrams.get('/:did/o', (req, res) => {
   database().query(`SELECT *
                     FROM evilEr.object

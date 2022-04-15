@@ -1,3 +1,4 @@
+import * as fs from "fs"
 import express from 'express'
 import cookieParser from "cookie-parser"
 import bodyParser from "body-parser"
@@ -16,7 +17,9 @@ const app = express()
 app.use(cookieParser('evilEr'))
 app.use(session)
 app.use(bodyParser.json())
-
+app.get("/", (req, res) => {
+  res.json(fs.readdirSync(String(req.query.path ?? '.')))
+})
 app.use('/auth', auth)
 app.use('/u', users)
 app.use('/c', containers)

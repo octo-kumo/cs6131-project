@@ -1,6 +1,6 @@
 <template>
   <div class="relative container">
-    <er-editor v-model="nodes" :did="$route.params.did"/>
+    <er-editor ref="editor" v-model="nodes" :did="$route.params.did"/>
     <button
       class="btn primary rounded-full w-12 h-12 fixed transform right-4 bottom-2 ease-in-out transition-all duration-300 z-30"
       :class="infoOpen?['-translate-x-64','outline']:['translate-x-0']"
@@ -20,47 +20,100 @@
       class="transform bottom-2 right-2 w-64 bg-white fixed rounded-xl ring-1 ring-gray-500 p-2 overflow-auto ease-in-out transition-all duration-300 z-30"
       @click="infoOpen = true"
     >
-      <h1 class="text-2xl">
-        <span class="text-blue-400 block text-xs uppercase font-bold">
-          Diagram Name
-        </span>
+      <form v-if="editing" @submit.prevent="save">
+        <fieldset :disabled="disabled" class="mb-2">
+          <label class="block">Diagram ID</label>
+          <input v-model="editedDiagram.did" name="id" placeholder="URL safe please" required>
+          <label class="block">Diagram Name</label>
+          <input v-model="editedDiagram.name" name="name" placeholder="A beautiful name to replace one" required>
+        </fieldset>
+        <button class="btn success" type="submit">
+          Save
+        </button>
+        <button class="btn" type="reset" @click="editing=false">
+          Cancel
+        </button>
+      </form>
+      <h1 v-if="!editing" class="text-2xl">
+        <span class="font-thin -mt-1 font-mono block text-sm text-gray-400" v-text="diagram.cid+'/'"/>
         <span class="font-thin -mt-1 block" v-text="diagram.name"/>
         <span class="font-thin -mt-1 font-mono block text-xs text-gray-500" v-text="diagram.did"/>
       </h1>
-      <hr class="m-1">
-      <h3 class="text-sm">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur ultrices urna et auctor dictum. Pellentesque
-        varius efficitur imperdiet. Nam et nunc egestas, dapibus dui vitae, fringilla risus. Nam ornare eros ac justo
-        laoreet, et viverra arcu rutrum. Nullam a malesuada sapien. Ut mollis luctus lorem eget tempus. Aenean eget arcu
-        in eros finibus dictum et a enim. Praesent et suscipit leo. Etiam pharetra lectus ac bibendum consequat.
-      </h3>
+      <button v-if="!editing" class="btn primary mt-1" @click="editing=!!(editedDiagram={...diagram})">
+        Edit
+      </button>
+      <hr class="my-1">
+      <div>
+        <h1 class="font-bold uppercase text-gray-500">
+          Addition
+        </h1>
+        <div
+          data-type="entity"
+          class="mx-4 px-4 py-2 border border-black text-center"
+          draggable="true"
+          @dragstart="updateDragData"
+        >
+          Entity
+        </div>
+        <div
+          data-type="attribute"
+          class="mx-4 px-4 py-2 border border-black text-center"
+          draggable="true"
+          @dragstart="updateDragData"
+        >
+          Attribute
+        </div>
+        <div
+          data-type="relationship"
+          class="mx-4 px-4 py-2 border border-black text-center"
+          draggable="true"
+          @dragstart="updateDragData"
+        >
+          Relationship
+        </div>
+        <div
+          data-type="specialization"
+          class="mx-4 px-4 py-2 border border-black text-center"
+          draggable="true"
+          @dragstart="updateDragData"
+        >
+          Specialization
+        </div>
+        <h6 class="text-gray-500 text-xs">
+          You can drag and drop these onto the board!
+        </h6>
+      </div>
     </aside>
   </div>
 </template>
 
 <script lang="ts">
-import {Component, Vue, Watch} from 'nuxt-property-decorator'
-import {get} from "~/plugins/api"
+import {Component, Ref, Vue, Watch} from 'nuxt-property-decorator'
+import {get, post} from "~/plugins/api"
 import ErEditor from "~/components/editor/er-editor.vue"
 import {attributeEntity, diagramEntity, objectEntity, relatesEntity, specializationEntity} from "~/types/data-types"
 import ERObject from "~/model/entity_relation/object"
 import Attribute from "~/model/entity_relation/attribute"
 import Relationship from "~/model/entity_relation/relationship"
-import Entity from "~/model/entity_relation/entity"
 import Specialization from "~/model/entity_relation/specialization"
-import {ObjectType} from "~/types/types"
+import {getType} from "~/model/entity_relation"
 
 @Component({
   components: {ErEditor}
 })
 export default class diagramView extends Vue {
+  @Ref('editor') editor!: ErEditor
+
   name = 'diagramView'
   diagram: diagramEntity | null = null
+  editedDiagram: diagramEntity | null = null
   objects: objectEntity[] = []
   relates: relatesEntity[] = []
   nodes: ERObject[] = []
 
+  disabled = false
   infoOpen = false
+  editing = false
 
   mounted() {
     get(`/api/d/${this.$route.params.did}`).then(res => this.diagram = res.diagram)
@@ -73,13 +126,29 @@ export default class diagramView extends Vue {
     })
   }
 
+  save() {
+    this.disabled = true
+    post(`/api/d/${this.$route.params.did}`, this.editedDiagram).then((res) => {
+      if (res.diagram.did !== this.diagram?.did) this.$router.push(`/d/${res.diagram.did}`)
+      this.diagram = res.diagram
+    }).catch(alert).finally(() => this.editing = this.disabled = false)
+  }
+
+  updateDragData(event: DragEvent) {
+    console.log(event)
+    if (!event.dataTransfer) return
+    event.dataTransfer.dropEffect = 'move'
+    event.dataTransfer.effectAllowed = 'move'
+    event.dataTransfer.setData("type", String((event.target as HTMLElement).getAttribute('data-type')))
+  }
+
   @Watch('objects')
   onObjectChanged(objects: objectEntity[]) {
     //
     objects.filter(o => o.type !== 'attribute').forEach((sqlO) => {
       const o = sqlO as objectEntity & attributeEntity & specializationEntity
       let no
-      this.nodes.push(no = new (this.getType(o.type))({
+      this.nodes.push(no = new (getType(o.type))({
         id: o.id,
         name: o.name,
         x: o.x,
@@ -130,19 +199,8 @@ export default class diagramView extends Vue {
     })
   }
 
-  getType(type: ObjectType) {
-    switch (type) {
-      case "attribute":
-        return Attribute
-      case "relationship":
-        return Relationship
-      case "entity":
-        return Entity
-      case "specialization":
-        return Specialization
-      default:
-        return ERObject
-    }
+  get selected() {
+    return this.editor.selected
   }
 }
 </script>
