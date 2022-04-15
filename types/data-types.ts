@@ -130,7 +130,7 @@ export interface userEntity {
   'uid'?: string;
 }
 
-export interface vusersEntity {
+export interface vuserEntity {
   'email': string;
   'isAdmin': boolean;
   'name': string;

@@ -1,15 +1,17 @@
 import * as fs from "fs"
 import * as path from "path"
-import mysql, {Connection} from 'promise-mysql'
+import mysql, {Pool} from 'promise-mysql'
 
-let db: Connection
+let db: Pool
 
 export async function init() {
-  db = await mysql.createConnection({
-    host: 'localhost',
+  db = await mysql.createPool({
+    database: "evilEr",
+    connectionLimit: 10,
+    host: process.env.SQL_HOST ?? 'localhost',
     port: 3306,
     user: 'root',
-    password: 'admin'
+    password: process.env.SQL_PASSWORD ?? 'admin'
   })
   console.log('connected to sql server...')
   await db.query('CREATE DATABASE IF NOT EXISTS evilEr;')

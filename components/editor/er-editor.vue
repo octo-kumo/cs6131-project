@@ -13,9 +13,12 @@
 
 <script lang="ts">
 
-import {Component, Model, Ref, Vue} from 'nuxt-property-decorator'
+import {Component, Model, Prop, Ref, Vue} from 'nuxt-property-decorator'
+import {Socket} from "socket.io-client"
 import ERObject from "~/model/entity_relation/object"
 import Vector from "~/model/entity_relation/vector"
+import client from "~/socket/client"
+import {objectEntity} from "~/types/data-types"
 
 function flatten(nodes: ERObject[]): ERObject[] {
   return [...nodes, ...nodes.flatMap(n => flatten(n.attributes))]
@@ -40,9 +43,11 @@ const RIGHT_BUTTON = 2
 @Component
 export default class EREditor extends Vue {
   @Ref("editor") editor!: HTMLCanvasElement
+  @Prop({type: String}) did!: string
   @Model('change', {type: Array, default: () => []}) nodes!: ERObject[]
   name = 'er-editor'
 
+  io: Socket | null = null
   mouseState: '' | 'empty' | 'dragging' | 'selecting' = ''
 
   ratio = 0
@@ -61,11 +66,25 @@ export default class EREditor extends Vue {
   selected: ERObject | null = null
 
   mounted() {
+    this.io = client()
+    console.log(this.io)
+    this.io.connect()
+    this.io.on("update.object", (obj: Partial<objectEntity>) => {
+      console.log("update.object", obj)
+      if (obj.did !== this.did) return
+      const node = flatten(this.nodes).find(o => o.id === obj.id)
+      if (!node) return
+      Object.assign(node, obj)
+    })
+    this.io.on("connect", () => {
+      console.log("connected")
+    })
     this.ratio = PIXEL_RATIO()
     this.paint()
   }
 
   paint() {
+    if (!this.editor) return
     const ctx = this.editor.getContext("2d")
     if (!ctx) return
     this.setupCanvas(this.editor, ctx, window.innerWidth, window.innerHeight)
@@ -124,7 +143,6 @@ export default class EREditor extends Vue {
   }
 
   mouseDown(e: MouseEvent) {
-    console.log("down", e)
     this.mousePos.set(e.x, e.y)
     this.mouseWorld.set(this.unproject(this.mousePos))
     if (e.button === LEFT_BUTTON) {
@@ -152,8 +170,17 @@ export default class EREditor extends Vue {
   }
 
   mouseUp(e: MouseEvent) {
+    this.mousePos.set(e.x, e.y)
+    this.mouseWorld.set(this.unproject(this.mousePos))
+    if (this.mouseState === "dragging" && this.selected) {
+      this.io?.emit("updateObject", {
+        did: this.did,
+        id: this.selected.id,
+        x: this.selected.x,
+        y: this.selected.y
+      })
+    }
     this.mouseState = ""
-    console.log("up", e)
   }
 
   mouseMove(e: MouseEvent) {

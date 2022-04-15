@@ -4,8 +4,14 @@
     @submit.prevent="submit()"
   >
     <h1 class="text-center text-2xl">
-      New Collection
+      New Diagram
     </h1>
+    <div class="grid grid-cols-2 m-2">
+      <label class="text-right px-4">Container</label>
+      <select v-model="cid" name="cid" required>
+        <option v-for="(o,i) in containers" :key="i" :value="o.cid" v-text="o.name"/>
+      </select>
+    </div>
     <div class="grid grid-cols-2 m-2">
       <label class="text-right px-4">ID</label>
       <input v-model="id" name="id" placeholder="URL safe please" required>
@@ -14,11 +20,22 @@
       <label class="text-right px-4">Name</label>
       <input v-model="name" name="name" placeholder="You will give it a beautiful name" required>
     </div>
+    <div class="grid grid-cols-2 m-2">
+      <label class="text-right px-4">Type</label>
+      <select v-model="type" name="cid" required>
+        <option value="er">
+          Entity Relation
+        </option>
+        <option value="rs">
+          Relational Schema
+        </option>
+      </select>
+    </div>
     <div class="grid grid-cols-2 gap-4">
       <button class="btn success" type="submit">
         Save
       </button>
-      <nuxt-link to="/" class="btn danger">
+      <nuxt-link to="/c" class="btn danger">
         Cancel
       </nuxt-link>
     </div>
@@ -27,16 +44,21 @@
 
 <script lang="ts">
 import {Component, Vue} from 'nuxt-property-decorator'
+import {containerEntity} from "~/types/data-types"
 
 @Component
-export default class newCollection extends Vue {
+export default class newDiagram extends Vue {
+  cid = ''
   id = ''
   name = ''
+  type = 'er'
 
   submit() {
-    fetch("/api/n/c", {
+    fetch("/api/n/d", {
       method: "POST",
       body: JSON.stringify({
+        cid: this.cid,
+        type: this.type,
         name: this.name,
         id: this.id
       }),
@@ -46,9 +68,13 @@ export default class newCollection extends Vue {
       }
     }).then(res => res.json()).then((res) => {
       if (res.status === "success") {
-        this.$router.push(`/c/${this.id}`)
+        this.$router.push(`/d/${this.id}`)
       } else alert(res.error)
     })
+  }
+
+  get containers(): containerEntity[] {
+    return this.$store.state.containers || []
   }
 }
 </script>

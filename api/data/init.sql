@@ -2,61 +2,61 @@ CREATE DATABASE IF NOT EXISTS evilEr;
 USE evilEr;
 
 ##### TABLE CREATION #####
-CREATE TABLE IF NOT EXISTS `User`
+CREATE TABLE IF NOT EXISTS `user`
 (
   uid        VARCHAR(36) UNIQUE default (uuid()) not null,
   pfp        VARCHAR(128),
   name       VARCHAR(32)                         not null,
-  isAdmin    BOOL,
+  isadmin    BOOL,
   email      VARCHAR(32) UNIQUE                  not null,
   pwd_hash   CHAR(40)                            not null,
   last_login DATETIME,
   PRIMARY KEY (uid)
 );
 
-CREATE TABLE IF NOT EXISTS MESSAGE
+CREATE TABLE IF NOT EXISTS message
 (
   mid      VARCHAR(36) not null,
   text     TEXT        not null,
   datetime DATETIME    not null,
-  cid      VARCHAR(36) not null, # from 'Container'; SENT
-  uid      VARCHAR(36) not null, # from 'User'; SENT
+  cid      VARCHAR(36) not null, # from 'container'; SENT
+  uid      VARCHAR(36) not null, # from 'user'; SENT
   PRIMARY KEY (mid, cid, uid)
 );
 
-CREATE TABLE IF NOT EXISTS Container
+CREATE TABLE IF NOT EXISTS container
 (
   cid  VARCHAR(36) UNIQUE not null,
   name VARCHAR(32)        not null,
   PRIMARY KEY (cid)
 );
 
-CREATE TABLE IF NOT EXISTS Diagram
+CREATE TABLE IF NOT EXISTS diagram
 (
   did  VARCHAR(36) UNIQUE not null,
   name VARCHAR(32)        not null,
   isEr BOOL,
-  cid  VARCHAR(36)        not null, # from 'Container'; FROM
+  cid  VARCHAR(36)        not null, # from 'container'; FROM
   PRIMARY KEY (did)
 );
 
-CREATE TABLE IF NOT EXISTS Admin
+CREATE TABLE IF NOT EXISTS admin
 (
   retired    BOOL,
   start_time DATETIME,
-  uid        VARCHAR(36) not null, # from 'User'; inherits
+  uid        VARCHAR(36) not null, # from 'user'; inherits
   PRIMARY KEY (uid)
 );
 
-CREATE TABLE IF NOT EXISTS Editor
+CREATE TABLE IF NOT EXISTS editor
 (
   created    INT       default 0,
   reputation FLOAT(32) default 0,
-  uid        VARCHAR(36) not null, # from 'User'; inherits
+  uid        VARCHAR(36) not null, # from 'user'; inherits
   PRIMARY KEY (uid)
 );
 
-CREATE TABLE IF NOT EXISTS Object
+CREATE TABLE IF NOT EXISTS object
 (
   x        FLOAT(16)   not null,
   y        FLOAT(16)   not null,
@@ -64,165 +64,165 @@ CREATE TABLE IF NOT EXISTS Object
   name     VARCHAR(32) not null,
   type     VARCHAR(16),
   outlined BOOL,
-  did      VARCHAR(36) not null, # from 'Diagram'; BELONGS_TO
+  did      VARCHAR(36) not null, # from 'diagram'; BELONGS_TO
   PRIMARY KEY (id, did)
 );
 
-CREATE TABLE IF NOT EXISTS Attribute
+CREATE TABLE IF NOT EXISTS attribute
 (
   isKey     BOOL,
   isDerived BOOL,
-  pid       VARCHAR(36),          # from 'Object'; ATTR_OF
-  id        VARCHAR(36) not null, # from 'Object'; inherits
-  did       VARCHAR(36) not null, # from 'Object'; inherits
+  pid       VARCHAR(36),          # from 'object'; ATTR_OF
+  id        VARCHAR(36) not null, # from 'object'; inherits
+  did       VARCHAR(36) not null, # from 'object'; inherits
   PRIMARY KEY (id, did)
 );
 
-CREATE TABLE IF NOT EXISTS Specialization
+CREATE TABLE IF NOT EXISTS specialization
 (
   disjoint BOOL,
-  id       VARCHAR(36) not null, # from 'Object'; inherits
-  did      VARCHAR(36) not null, # from 'Object'; inherits
+  id       VARCHAR(36) not null, # from 'object'; inherits
+  did      VARCHAR(36) not null, # from 'object'; inherits
   PRIMARY KEY (id, did)
 );
 
-CREATE TABLE IF NOT EXISTS `Table`
+CREATE TABLE IF NOT EXISTS `table`
 (
   x    FLOAT(16)   not null,
   y    FLOAT(16)   not null,
   name VARCHAR(32) not null,
-  did  VARCHAR(36) not null, # from 'Diagram'; BELONGS_TO
+  did  VARCHAR(36) not null, # from 'diagram'; BELONGS_TO
   PRIMARY KEY (name, did)
 );
 
-CREATE TABLE IF NOT EXISTS `Column`
+CREATE TABLE IF NOT EXISTS `column`
 (
   name    VARCHAR(32),
   type    VARCHAR(16),
   param   VARCHAR(16),
   isKey   BOOL,
   notNull BOOL,
-  r_name  VARCHAR(32) not null, # from 'Table'; COLUMN_OF
-  did     VARCHAR(36) not null, # from 'Table'; COLUMN_OF
+  r_name  VARCHAR(32) not null, # from 'table'; COLUMN_OF
+  did     VARCHAR(36) not null, # from 'table'; COLUMN_OF
   PRIMARY KEY (name, r_name, did)
 );
 
-CREATE TABLE IF NOT EXISTS CAN_EDIT
+CREATE TABLE IF NOT EXISTS can_edit
 (
   start_time DATETIME,
-  cid        VARCHAR(36) not null, # from 'Container'; Container
-  uid        VARCHAR(36) not null, # from 'Editor'; Editor
+  cid        VARCHAR(36) not null, # from 'container'; container
+  uid        VARCHAR(36) not null, # from 'editor'; editor
   PRIMARY KEY (cid, uid)
 );
 
-CREATE TABLE IF NOT EXISTS CAN_VIEW
+CREATE TABLE IF NOT EXISTS can_view
 (
   start_time DATETIME,
-  cid        VARCHAR(36) not null, # from 'Container'; Container
-  uid        VARCHAR(36) not null, # from 'User'; User
+  cid        VARCHAR(36) not null, # from 'container'; container
+  uid        VARCHAR(36) not null, # from 'user'; user
   PRIMARY KEY (cid, uid)
 );
 
-CREATE TABLE IF NOT EXISTS RELATES
+CREATE TABLE IF NOT EXISTS relates
 (
   role        VARCHAR(32),
   total       BOOL,
   cardinality VARCHAR(8),
-  rid         VARCHAR(36) not null, # from 'Object'; Object
-  oid         VARCHAR(36) not null, # from 'Object'; Object
-  did         VARCHAR(36) not null, # from 'Object'; Object
+  rid         VARCHAR(36) not null, # from 'object'; object
+  oid         VARCHAR(36) not null, # from 'object'; object
+  did         VARCHAR(36) not null, # from 'object'; object
   PRIMARY KEY (rid, oid, did, role)
 );
 
-CREATE TABLE IF NOT EXISTS LAST_EDITED_BY
+CREATE TABLE IF NOT EXISTS last_edited_by
 (
   datetime DATETIME,
-  did      VARCHAR(36) not null, # from 'Diagram'; Diagram
-  uid      VARCHAR(36) not null, # from 'User'; User
+  did      VARCHAR(36) not null, # from 'diagram'; diagram
+  uid      VARCHAR(36) not null, # from 'user'; user
   PRIMARY KEY (did, uid)
 );
 
-CREATE TABLE IF NOT EXISTS CREATED_BY
+CREATE TABLE IF NOT EXISTS created_by
 (
   datetime DATETIME,
-  cid      VARCHAR(36) not null, # from 'Container'; Container
-  uid      VARCHAR(36) not null, # from 'User'; User
+  cid      VARCHAR(36) not null, # from 'container'; container
+  uid      VARCHAR(36) not null, # from 'user'; user
   PRIMARY KEY (cid, uid)
 );
 
-CREATE TABLE IF NOT EXISTS `FOREIGN`
+CREATE TABLE IF NOT EXISTS `foreign`
 (
   role     VARCHAR(32),
   required BOOL,
-  r_name   VARCHAR(32) not null, # from 'Table'; references
-  name     VARCHAR(32) not null, # from 'Table'; by
+  r_name   VARCHAR(32) not null, # from 'table'; references
+  name     VARCHAR(32) not null, # from 'table'; by
   did      VARCHAR(36) not null,
   PRIMARY KEY (r_name, did, name)
 );
 
-CREATE TABLE IF NOT EXISTS LAST_VIEW
+CREATE TABLE IF NOT EXISTS last_view
 (
   datetime DATETIME,
-  did      VARCHAR(36) not null, # from 'Diagram'; Diagram
-  uid      VARCHAR(36) not null, # from 'User'; User
+  did      VARCHAR(36) not null, # from 'diagram'; diagram
+  uid      VARCHAR(36) not null, # from 'user'; user
   PRIMARY KEY (did, uid)
 );
 
 ##### TABLE ALTER #####
 
 
-ALTER TABLE MESSAGE
-  ADD FOREIGN KEY (cid) REFERENCES Container (cid),
-  ADD FOREIGN KEY (uid) REFERENCES `User` (uid);
+ALTER TABLE message
+  ADD foreign KEY (cid) REFERENCES container (cid),
+  ADD foreign KEY (uid) REFERENCES `user` (uid);
 
-ALTER TABLE Diagram
-  ADD FOREIGN KEY (cid) REFERENCES Container (cid);
+ALTER TABLE diagram
+  ADD foreign KEY (cid) REFERENCES container (cid);
 
-ALTER TABLE Admin
-  ADD FOREIGN KEY (uid) REFERENCES `User` (uid);
+ALTER TABLE admin
+  ADD foreign KEY (uid) REFERENCES `user` (uid);
 
-ALTER TABLE Editor
-  ADD FOREIGN KEY (uid) REFERENCES `User` (uid);
+ALTER TABLE editor
+  ADD foreign KEY (uid) REFERENCES `user` (uid);
 
-ALTER TABLE Object
-  ADD FOREIGN KEY (did) REFERENCES Diagram (did);
+ALTER TABLE object
+  ADD foreign KEY (did) REFERENCES diagram (did);
 
-ALTER TABLE Attribute
-  ADD FOREIGN KEY (pid, did) REFERENCES Object (id, did),
-  ADD FOREIGN KEY (id, did) REFERENCES Object (id, did);
+ALTER TABLE attribute
+  ADD foreign KEY (pid, did) REFERENCES object (id, did),
+  ADD foreign KEY (id, did) REFERENCES object (id, did);
 
-ALTER TABLE Specialization
-  ADD FOREIGN KEY (id, did) REFERENCES Object (id, did);
+ALTER TABLE specialization
+  ADD foreign KEY (id, did) REFERENCES object (id, did);
 
-ALTER TABLE `Table`
-  ADD FOREIGN KEY (did) REFERENCES Diagram (did);
+ALTER TABLE `table`
+  ADD foreign KEY (did) REFERENCES diagram (did);
 
-ALTER TABLE `Column`
-  ADD FOREIGN KEY (r_name, did) REFERENCES `Table` (name, did);
+ALTER TABLE `column`
+  ADD foreign KEY (r_name, did) REFERENCES `table` (name, did);
 
-ALTER TABLE CAN_EDIT
-  ADD FOREIGN KEY (cid) REFERENCES Container (cid),
-  ADD FOREIGN KEY (uid) REFERENCES Editor (uid);
+ALTER TABLE can_edit
+  ADD foreign KEY (cid) REFERENCES container (cid),
+  ADD foreign KEY (uid) REFERENCES editor (uid);
 
-ALTER TABLE CAN_VIEW
-  ADD FOREIGN KEY (cid) REFERENCES Container (cid),
-  ADD FOREIGN KEY (uid) REFERENCES `User` (uid);
+ALTER TABLE can_view
+  ADD foreign KEY (cid) REFERENCES container (cid),
+  ADD foreign KEY (uid) REFERENCES `user` (uid);
 
-ALTER TABLE RELATES
-  ADD FOREIGN KEY (rid, did) REFERENCES Object (id, did);
+ALTER TABLE relates
+  ADD foreign KEY (rid, did) REFERENCES object (id, did);
 
-ALTER TABLE LAST_EDITED_BY
-  ADD FOREIGN KEY (did) REFERENCES Diagram (did),
-  ADD FOREIGN KEY (uid) REFERENCES `User` (uid);
+ALTER TABLE last_edited_by
+  ADD foreign KEY (did) REFERENCES diagram (did),
+  ADD foreign KEY (uid) REFERENCES `user` (uid);
 
-ALTER TABLE CREATED_BY
-  ADD FOREIGN KEY (cid) REFERENCES Container (cid),
-  ADD FOREIGN KEY (uid) REFERENCES `User` (uid);
+ALTER TABLE created_by
+  ADD foreign KEY (cid) REFERENCES container (cid),
+  ADD foreign KEY (uid) REFERENCES `user` (uid);
 
-ALTER TABLE `FOREIGN`
-  ADD FOREIGN KEY (r_name, did) REFERENCES `Table` (name, did),
-  ADD FOREIGN KEY (name, did) REFERENCES `Table` (name, did);
+ALTER TABLE `foreign`
+  ADD foreign KEY (r_name, did) REFERENCES `table` (name, did),
+  ADD foreign KEY (name, did) REFERENCES `table` (name, did);
 
-ALTER TABLE LAST_VIEW
-  ADD FOREIGN KEY (did) REFERENCES Diagram (did),
-  ADD FOREIGN KEY (uid) REFERENCES `User` (uid);
+ALTER TABLE last_view
+  ADD foreign KEY (did) REFERENCES diagram (did),
+  ADD foreign KEY (uid) REFERENCES `user` (uid);

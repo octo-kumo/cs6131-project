@@ -1,7 +1,6 @@
 <template>
-  <div class="container">
-    <er-editor v-model="nodes"/>
-
+  <div class="relative container">
+    <er-editor v-model="nodes" :did="$route.params.did"/>
     <button
       class="btn primary rounded-full w-12 h-12 fixed transform right-4 bottom-2 ease-in-out transition-all duration-300 z-30"
       :class="infoOpen?['-translate-x-64','outline']:['translate-x-0']"
@@ -49,7 +48,7 @@ import Attribute from "~/model/entity_relation/attribute"
 import Relationship from "~/model/entity_relation/relationship"
 import Entity from "~/model/entity_relation/entity"
 import Specialization from "~/model/entity_relation/specialization"
-import {ObjectType} from "~/types/types";
+import {ObjectType} from "~/types/types"
 
 @Component({
   components: {ErEditor}

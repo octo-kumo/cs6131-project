@@ -7,16 +7,16 @@ const users = Router({
 })
 
 users.get('/', (req, res) => {
-  database().query('SELECT * FROM eviler.vusers;').then((results: any) => {
+  database().query('SELECT * FROM evilEr.vUsers;').then((results: any) => {
     res.json({status: "success", users: results})
   }).catch(error => res.json({status: "failed", error}))
 })
 
 users.get('/:uid', (req, res) => {
   database().query(`SELECT *
-                    FROM eviler.vusers
-                           NATURAL LEFT JOIN eviler.editor
-                           NATURAL LEFT JOIN eviler.admin
+                    FROM evilEr.vUsers
+                           NATURAL LEFT JOIN evilEr.editor
+                           NATURAL LEFT JOIN evilEr.admin
                     WHERE uid = ${escape(req.params.uid)}
                     LIMIT 1;`).then((results: any) => {
     res.json({status: "success", user: results[0]})
@@ -25,8 +25,8 @@ users.get('/:uid', (req, res) => {
 
 users.get('/:uid/created', (req, res) => {
   database().query(`SELECT *
-                    FROM eviler.created_by
-                           NATURAL LEFT JOIN eviler.container
+                    FROM evilEr.created_by
+                           NATURAL LEFT JOIN evilEr.container
                     WHERE uid = ${escape(req.params.uid)};`).then((results: any) => {
     res.json({status: "success", created: results})
   }).catch(error => res.json({status: "failed", error}))
@@ -34,8 +34,8 @@ users.get('/:uid/created', (req, res) => {
 
 users.get('/:uid/canEdit', (req, res) => {
   database().query(`SELECT *
-                    FROM eviler.can_edit
-                           NATURAL LEFT JOIN eviler.container
+                    FROM evilEr.can_edit
+                           NATURAL LEFT JOIN evilEr.container
                     WHERE uid = ${escape(req.params.uid)};`).then((results: any) => {
     res.json({status: "success", created: results})
   }).catch(error => res.json({status: "failed", error}))
@@ -43,8 +43,8 @@ users.get('/:uid/canEdit', (req, res) => {
 
 users.get('/:uid/canView', (req, res) => {
   database().query(`SELECT *
-                    FROM eviler.can_view
-                           NATURAL LEFT JOIN eviler.container
+                    FROM evilEr.can_view
+                           NATURAL LEFT JOIN evilEr.container
                     WHERE uid = ${escape(req.params.uid)};`).then((results: any) => {
     res.json({status: "success", created: results})
   }).catch(error => res.json({status: "failed", error}))

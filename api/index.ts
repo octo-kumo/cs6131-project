@@ -1,6 +1,5 @@
 import express from 'express'
 import cookieParser from "cookie-parser"
-import session from "express-session"
 import bodyParser from "body-parser"
 import db, {init} from './data'
 import auth from "./routes/auth"
@@ -8,19 +7,15 @@ import users from "./routes/users"
 import containers from "./routes/container"
 import diagrams from "./routes/diagram"
 import n from "./routes/new"
+import {session} from "./session"
 
 // Create express instance
+
 init().then(() => db())
 const app = express()
-
 app.use(cookieParser('evilEr'))
-app.use(session({
-  resave: false,
-  saveUninitialized: false,
-  secret: 'evilEr'
-}))
+app.use(session)
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded())
 
 app.use('/auth', auth)
 app.use('/u', users)

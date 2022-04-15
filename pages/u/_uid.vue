@@ -24,12 +24,12 @@
 <script lang="ts">
 import {Component, Vue} from 'nuxt-property-decorator'
 import {get} from "~/plugins/api"
-import {vusersEntity} from "~/types/data-types"
+import {vuserEntity} from "~/types/data-types"
 
 @Component
 export default class userView extends Vue {
   name = 'userView'
-  user: vusersEntity | null = null
+  user: vuserEntity | null = null
 
   mounted() {
     get(`/api/u/${this.$route.params.uid}`).then(res => this.user = res.user)

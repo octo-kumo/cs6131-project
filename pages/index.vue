@@ -9,10 +9,10 @@
       </h2>
       <div class="flex justify-center links gap-2">
         <nuxt-link to="/c" class="btn">
-          View Collections
+          View Containers
         </nuxt-link>
-        <nuxt-link to="/new/c" class="btn primary">
-          Create new Collection
+        <nuxt-link to="/n/container" class="btn primary">
+          Create new Container
         </nuxt-link>
       </div>
     </div>

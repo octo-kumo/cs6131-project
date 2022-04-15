@@ -1,5 +1,6 @@
 # All non-ending commands should end with '#' for the self-made parser to understand
 USE evilEr;
+
 CREATE PROCEDURE login(IN eml VARCHAR(32), IN pwd VARCHAR(32))
 BEGIN
   UPDATE user
@@ -47,6 +48,14 @@ BEGIN
   INSERT INTO created_by (datetime, cid, uid) VALUES (now(), id, uid) ON DUPLICATE KEY UPDATE datetime=now();#
   INSERT INTO can_edit (start_time, cid, uid) VALUES (now(), id, uid) ON DUPLICATE KEY UPDATE start_time=now();#
   INSERT INTO can_view (start_time, cid, uid) VALUES (now(), id, uid) ON DUPLICATE KEY UPDATE start_time=now();#
+END;
+
+CREATE PROCEDURE createDiagram(IN cid CHAR(36), IN id CHAR(36), IN name CHAR(32), IN type BOOL, IN uid CHAR(36))
+BEGIN
+  INSERT INTO diagram (did, name, isEr, cid) VALUES (id, name, type, cid);#
+  INSERT INTO editor (created, uid) VALUES (1, uid) ON DUPLICATE KEY UPDATE created=created + 1;#
+  INSERT INTO last_edited_by (datetime, did, uid) VALUES (now(), id, uid);#
+  INSERT INTO last_view (datetime, did, uid) VALUES (now(), id, uid);#
 END;
 
 CREATE PROCEDURE addEntity(IN id CHAR(36), IN nme VARCHAR(32), IN eml VARCHAR(32), IN password VARCHAR(32))

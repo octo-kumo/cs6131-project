@@ -24,7 +24,7 @@ export default class User {
   }
 
   toSQL() {
-    return `INSERT INTO eviler.user (uid, pfp, name, isAdmin, email, pwd_hash, last_login)
+    return `INSERT INTO evilEr.user (uid, pfp, name, isAdmin, email, pwd_hash, last_login)
             VALUES (${this.uid}, ${this.pfp}, ${this.name}, ${this.isAdmin}, ${this.email}, ${this.pwd_hash},
                     ${this.last_login});`
   }

@@ -1,5 +1,3 @@
-import io from './io.config'
-
 export default {
   /*
   ** Nuxt target
@@ -59,6 +57,7 @@ export default {
   buildModules: [
     // Doc: https://github.com/nuxt-community/eslint-module
     '@nuxtjs/tailwindcss',
+    'nuxt-purgecss',
     '@nuxt/typescript-build'
   ],
 
@@ -68,16 +67,15 @@ export default {
   modules: [
     // Doc: https://http.nuxtjs.org
     '@nuxt/http',
-    '@nuxtjs/tailwindcss',
-    'nuxt-socket-io'
+    '@nuxtjs/tailwindcss'
   ],
-  io,
 
   /*
   ** Server Middleware
   */
   serverMiddleware: {
-    '/api': '~/api'
+    '/api': '~/api',
+    '/socket.io': '~/api/socket'
   },
 
   /*

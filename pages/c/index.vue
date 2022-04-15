@@ -14,6 +14,14 @@
         </nuxt-link>
         <h1 v-text="c.name"/>
       </div>
+      <nuxt-link
+        :to="`/n/container`"
+        class="p-4 border border-black rounded m-2 hover:text-blue-500 hover:border-blue-500"
+      >
+        <h1 class="text-4xl text-center">
+          +
+        </h1>
+      </nuxt-link>
     </div>
   </div>
 </template>

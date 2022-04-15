@@ -18,10 +18,15 @@
         </nuxt-link>
         <h1 v-text="d.name"/>
       </div>
+      <nuxt-link
+        :to="`/n/diagram?cid=${$route.params.cid}`"
+        class="block p-4 border border-black rounded m-2 hover:text-blue-500 hover:border-blue-500"
+      >
+        <h1 class="text-4xl text-center">
+          +
+        </h1>
+      </nuxt-link>
     </div>
-    <nuxt-link class="btn primary" to="/n/collection">
-      New
-    </nuxt-link>
   </div>
 </template>
 
