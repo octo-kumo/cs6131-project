@@ -11,6 +11,9 @@
 .btn.small {
   @apply py-0.5 rounded
 }
+.btn.xsmall {
+  @apply py-0 rounded text-sm
+}
 
 .btn.primary {
   @apply bg-blue-500

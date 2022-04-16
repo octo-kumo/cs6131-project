@@ -26,6 +26,11 @@ export default class Relationship extends ERObject {
     this.revalidate()
   }
 
+  removeRelation(i: number) {
+    this.relations.splice(i, 1)
+    this.revalidate()
+  }
+
   revalidate() {
     const map = new Map<string, number>()
     for (let i = 0; i < this.relations.length; i++) {
