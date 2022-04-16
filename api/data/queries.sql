@@ -64,6 +64,18 @@ BEGIN
   VALUES (id, nme, eml, SHA1(password));#
 END;
 
+CREATE PROCEDURE sendMessage(IN ud VARCHAR(36), IN cd VARCHAR(36), IN msg text)
+BEGIN
+  SET @md = uuid();#
+  INSERT INTO message (mid, text, datetime, cid, uid)
+  VALUES (@md, msg, now(), cd, ud);#
+  SELECT *
+  FROM message
+         NATURAL LEFT JOIN user u
+  WHERE mid = @md
+    AND cid = cd;#
+END;
+
 CREATE PROCEDURE objects(IN dd VARCHAR(36), IN tpe VARCHAR(36))
 BEGIN
   SELECT *

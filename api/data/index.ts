@@ -21,9 +21,11 @@ export async function init() {
   if (length === 0) {
     await run('init.sql')
     await run('queries.sql')
+    await run('triggers.sql')
     await run('populate.sql')
     await run('user_system.sql')
     for (const exmp of fs.readdirSync(path.join(__dirname, 'examples'))) {
+      console.log(exmp)
       await run('examples/' + exmp)
     }
   }

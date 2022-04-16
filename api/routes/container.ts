@@ -1,6 +1,8 @@
 import {Router} from 'express'
 import {escape} from "sqlstring"
 import database from '../data'
+import {server} from "../socket"
+import {requireAuth} from "../utils"
 
 const containers = Router({
   mergeParams: true
@@ -42,10 +44,17 @@ containers.get('/:cid/d', (req, res) => {
 containers.get('/:cid/c', (req, res) => {
   database().query(`SELECT *
                     FROM evilEr.message
-                           LEFT JOIN evilEr.user u on u.uid = message.uid
+                           NATURAL LEFT JOIN evilEr.vUsers
                     WHERE cid = ${escape(req.params.cid)}
-                    ORDER BY datetime DESC;`).then((results: any) => {
+                    ORDER BY datetime;`).then((results: any) => {
     res.json({status: "success", messages: results})
+  }).catch(error => res.json({status: "failed", error}))
+})
+
+containers.post('/:cid/c', requireAuth, (req, res) => {
+  database().query(`CALL sendMessage(?, ?, ?);`, [req.session.user?.uid, req.params.cid, req.body.message]).then((results: any) => {
+    server.emit('new.message', results[0][0])
+    res.json({status: "success", message: results[0][0]})
   }).catch(error => res.json({status: "failed", error}))
 })
 

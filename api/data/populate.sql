@@ -3,11 +3,11 @@ CALL register('test', 'test@nush.app', 'password');
 
 INSERT INTO user
 VALUES ('13371337-1337-1337-1337-133713371337', 'https://files.catbox.moe/4ri4bv.png', 'yun', true,
-        'h1710169@nushigh.edu.sg', SHA1('password'), null),
+        'h1710169@nushigh.edu.sg', SHA1('password'), null, 0),
        ('cf0e72fd-4a38-47e8-94e2-1e0441a64ba6', null, 'Chew Shuhui Phylliscia', true,
-        'nhscsp@nushigh.edu.sg', SHA1('password'), null),
+        'nhscsp@nushigh.edu.sg', SHA1('password'), null, 0),
        ('a595fb7e-6f7e-48ce-acc8-0bb023843d11', null, 'Evil Mrs Lee', false,
-        'evil@nush.app', SHA1('password'), null);
+        'evil@nush.app', SHA1('password'), null, 0);
 
 call createContainer('test', 'Examples', '13371337-1337-1337-1337-133713371337');
 call createContainer('sandbox', 'Test Collection', 'cf0e72fd-4a38-47e8-94e2-1e0441a64ba6');

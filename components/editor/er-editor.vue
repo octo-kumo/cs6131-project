@@ -24,7 +24,7 @@ import Vector from "~/model/entity_relation/vector"
 import client from "~/socket/client"
 import {objectEntity} from "~/types/data-types"
 import {ObjectType} from "~/types/types"
-import {getType} from "~/model/entity_relation";
+import {getType} from "~/model/entity_relation"
 
 function flatten(nodes: ERObject[]): ERObject[] {
   return [...nodes, ...nodes.flatMap(n => flatten(n.attributes))]
@@ -73,7 +73,6 @@ export default class EREditor extends Vue {
 
   mounted() {
     this.io = client()
-    console.log(this.io)
     this.io.connect()
     this.io.on("update.object", (obj: Partial<objectEntity>) => {
       console.log("update.object", obj)
@@ -82,9 +81,7 @@ export default class EREditor extends Vue {
       if (!node) return
       Object.assign(node, obj)
     })
-    this.io.on("connect", () => {
-      console.log("connected")
-    })
+    this.io.on("connect", () => this.io?.emit('requestRoom', "diagram_" + this.did))
     this.ratio = PIXEL_RATIO()
     this.paint()
   }

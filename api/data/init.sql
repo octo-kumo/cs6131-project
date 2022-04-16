@@ -4,13 +4,14 @@ USE evilEr;
 ##### TABLE CREATION #####
 CREATE TABLE IF NOT EXISTS `user`
 (
-  uid        VARCHAR(36) UNIQUE default (uuid()) not null,
-  pfp        VARCHAR(128),
-  name       VARCHAR(32)                         not null,
-  isadmin    BOOL,
-  email      VARCHAR(32) UNIQUE                  not null,
-  pwd_hash   CHAR(40)                            not null,
-  last_login DATETIME,
+  uid           VARCHAR(36) UNIQUE default (uuid()) not null,
+  pfp           VARCHAR(128),
+  name          VARCHAR(32)                         not null,
+  isadmin       BOOL,
+  email         VARCHAR(32) UNIQUE                  not null,
+  pwd_hash      CHAR(40)                            not null,
+  last_login    DATETIME,
+  messages_sent INT                default 0        not null,
   PRIMARY KEY (uid)
 );
 
@@ -33,10 +34,11 @@ CREATE TABLE IF NOT EXISTS container
 
 CREATE TABLE IF NOT EXISTS diagram
 (
-  did  VARCHAR(36) UNIQUE not null,
-  name VARCHAR(32)        not null,
-  isEr BOOL,
-  cid  VARCHAR(36)        not null, # from 'container'; FROM
+  did          VARCHAR(36) UNIQUE not null,
+  name         VARCHAR(32)        not null,
+  isEr         BOOL,
+  cid          VARCHAR(36)        not null, # from 'container'; FROM
+  objects_made INT default 0      not null,
   PRIMARY KEY (did)
 );
 

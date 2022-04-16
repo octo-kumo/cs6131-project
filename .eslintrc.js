@@ -21,6 +21,7 @@ module.exports = {
     'object-curly-spacing': 'off',
     'space-before-function-paren': 'off',
     'no-return-assign': 'off',
+    'vue/no-v-html': 'off',
     'vue/html-closing-bracket-spacing': 'off',
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',

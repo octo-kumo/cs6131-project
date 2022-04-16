@@ -35,7 +35,11 @@
         </button>
       </form>
       <h1 v-if="!editing" class="text-2xl">
-        <span class="font-thin -mt-1 font-mono block text-sm text-gray-400" v-text="diagram.cid+'/'"/>
+        <nuxt-link
+          :to="`/c/${diagram.cid}`"
+          class="font-thin -mt-1 font-mono block text-sm text-gray-400 hover:text-blue-500"
+          v-text="diagram.cid+'/'"
+        />
         <span class="font-thin -mt-1 block" v-text="diagram.name"/>
         <span class="font-thin -mt-1 font-mono block text-xs text-gray-500" v-text="diagram.did"/>
       </h1>

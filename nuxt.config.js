@@ -4,7 +4,7 @@ export default {
   ** See https://nuxtjs.org/api/configuration-target
   */
   target: 'server',
-
+  dev: process.env.NODE_ENV !== 'production',
   /*
   ** Headers of the page
   ** See https://nuxtjs.org/api/configuration-head
@@ -74,8 +74,7 @@ export default {
   ** Server Middleware
   */
   serverMiddleware: {
-    '/api': '~/api',
-    '/socket.io': '~/api/socket'
+    '/api': '~/api'
   }
 
   /*
