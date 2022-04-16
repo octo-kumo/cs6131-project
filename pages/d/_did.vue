@@ -22,6 +22,10 @@
     >
       <form v-if="editing" @submit.prevent="save">
         <fieldset :disabled="disabled" class="mb-2">
+          <label class="block">Container</label>
+          <select v-model="editedDiagram.cid" name="cid" required>
+            <option v-for="(o,i) in containers" :key="i" :value="o.cid" v-text="o.name"/>
+          </select>
           <label class="block">Diagram ID</label>
           <input v-model="editedDiagram.did" name="id" placeholder="URL safe please" required>
           <label class="block">Diagram Name</label>
@@ -88,6 +92,70 @@
         </h6>
       </div>
     </aside>
+    <aside
+      v-if="diagram"
+      id="left-panel"
+      :class="selected ? 'translate-x-0' : '-translate-x-full'"
+      class="transform bottom-2 left-2 w-128 bg-white fixed rounded-xl ring-1 ring-gray-500 p-2 overflow-auto ease-in-out transition-all duration-300 z-30"
+    >
+      <div v-if="selected" class="flex flex-col gap-2">
+        <div class="grid grid-cols-3 gap-x-1 gap-y-1 relative ring-1 ring-gray-200 p-2 pt-4 rounded">
+          <span class="absolute top-0 left-1 text-gray-500 uppercase font-bold text-xs select-none">Entity</span>
+          <label>ID</label>
+          <input v-model="selected.id" class="col-span-2">
+          <label>Name</label>
+          <input v-model="selected.name" class="col-span-2">
+          <label>Weak</label>
+          <button
+            class="btn primary small col-span-2"
+            :class="selected.weak?'outline':''"
+            @click="selected.weak=!selected.weak"
+            v-text="selected.weak?'Outlined':'Solid'"
+          />
+          <label>X</label>
+          <input v-model="selectedX" type="number" class="col-span-2">
+          <label>Y</label>
+          <input v-model="selectedY" type="number" class="col-span-2">
+        </div>
+        <div
+          v-if="selected._type==='attribute'"
+          class="grid grid-cols-3 gap-x-1 gap-y-1 relative ring-1 ring-gray-200 p-2 pt-4 rounded"
+        >
+          <span class="absolute top-0 left-1 text-gray-500 uppercase font-bold text-xs select-none">Attribute</span>
+          <label>Key</label>
+          <input v-model="selected.key" class="col-span-2 self-center" type="checkbox">
+          <label>Derived</label>
+          <input v-model="selected.derived" class="col-span-2 self-center" type="checkbox">
+        </div>
+        <div
+          v-if="selected._type==='relationship'"
+          class="relative ring-1 ring-gray-200 p-2 pt-4 rounded"
+        >
+          <span class="absolute top-0 left-1 text-gray-500 uppercase font-bold text-xs select-none">Relationship</span>
+          <table>
+            <thead>
+            <tr>
+              <td>Entity</td>
+              <td>Card.</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr
+              v-for="(r,i) in selected.relations"
+              :key="i"
+            >
+              <td>
+                <input v-model="r.entity.name">
+              </td>
+              <td>
+                <input v-model="r.cardinality">
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </aside>
   </div>
 </template>
 
@@ -95,7 +163,14 @@
 import {Component, Ref, Vue, Watch} from 'nuxt-property-decorator'
 import {get, post} from "~/plugins/api"
 import ErEditor from "~/components/editor/er-editor.vue"
-import {attributeEntity, diagramEntity, objectEntity, relatesEntity, specializationEntity} from "~/types/data-types"
+import {
+  attributeEntity,
+  containerEntity,
+  diagramEntity,
+  objectEntity,
+  relatesEntity,
+  specializationEntity
+} from "~/types/data-types"
 import ERObject from "~/model/entity_relation/object"
 import Attribute from "~/model/entity_relation/attribute"
 import Relationship from "~/model/entity_relation/relationship"
@@ -151,13 +226,16 @@ export default class diagramView extends Vue {
     //
     objects.filter(o => o.type !== 'attribute').forEach((sqlO) => {
       const o = sqlO as objectEntity & attributeEntity & specializationEntity
+      const Type = getType(o.type)
+      if (!Type) return
       let no
-      this.nodes.push(no = new (getType(o.type))({
+      this.nodes.push(no = new Type({
         id: o.id,
         name: o.name,
         x: o.x,
         y: o.y,
-        weak: o.outlined
+        weak: o.outlined,
+        _type: o.type
       }))
       switch (o.type) {
         case "specialization":
@@ -178,7 +256,8 @@ export default class diagramView extends Vue {
         weak: a.outlined,
         derived: a.isDerived,
         key: a.isKey,
-        _parent: a.pid || ''
+        _parent: a.pid || '',
+        _type: 'attribute'
       }))
     })
     const parents = [...this.nodes, ...attributes]
@@ -203,8 +282,28 @@ export default class diagramView extends Vue {
     })
   }
 
+  get containers(): containerEntity[] {
+    return this.$store.state.containers || []
+  }
+
   get selected() {
     return this.editor.selected
+  }
+
+  get selectedX() {
+    return String(this.editor.selected?.x)
+  }
+
+  set selectedX(input: number | string) {
+    if (this.editor.selected) this.editor.selected.x = parseFloat(String(input))
+  }
+
+  get selectedY() {
+    return String(this.editor.selected?.y)
+  }
+
+  set selectedY(input: number | string) {
+    if (this.editor.selected) this.editor.selected.y = parseFloat(String(input))
   }
 }
 </script>

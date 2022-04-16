@@ -25,6 +25,9 @@ import client from "~/socket/client"
 import {objectEntity} from "~/types/data-types"
 import {ObjectType} from "~/types/types"
 import {getType} from "~/model/entity_relation"
+import Attribute from "~/model/entity_relation/attribute";
+import Relationship from "~/model/entity_relation/relationship";
+import Specialization from "~/model/entity_relation/specialization";
 
 function flatten(nodes: ERObject[]): ERObject[] {
   return [...nodes, ...nodes.flatMap(n => flatten(n.attributes))]
@@ -69,7 +72,7 @@ export default class EREditor extends Vue {
   panStart = new Vector({})
   mouseStart = new Vector({})
 
-  selected: ERObject | null = null
+  selected: ERObject | Attribute | Relationship | Specialization | null = null
 
   mounted() {
     this.io = client()
@@ -221,11 +224,14 @@ export default class EREditor extends Vue {
     console.log(e, e.dataTransfer)
     console.log(e.dataTransfer?.getData('type'))
     const pos = this.unproject(new Vector({x: e.x, y: e.y}))
-    const obj = new (getType(e.dataTransfer?.getData('type') as ObjectType))({
+    const Type = getType(e.dataTransfer?.getData('type') as ObjectType)
+    if (!Type) return
+    const obj = new Type({
       id: uuid(),
       x: pos.x,
       y: pos.y,
-      name: "Unnamed"
+      name: "Unnamed",
+      _type: e.dataTransfer?.getData('type') as ObjectType
     })
     this.nodes.push(obj)
   }

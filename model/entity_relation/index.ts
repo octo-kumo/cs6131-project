@@ -3,7 +3,6 @@ import Attribute from "~/model/entity_relation/attribute"
 import Relationship from "~/model/entity_relation/relationship"
 import Entity from "~/model/entity_relation/entity"
 import Specialization from "~/model/entity_relation/specialization"
-import ERObject from "~/model/entity_relation/object"
 
 export function getType(type: ObjectType) {
   switch (type) {
@@ -16,6 +15,6 @@ export function getType(type: ObjectType) {
     case "specialization":
       return Specialization
     default:
-      return ERObject
+      return null
   }
 }

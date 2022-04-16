@@ -2,26 +2,29 @@ import Vector, {VectorParams} from '@/model/entity_relation/vector'
 import Attribute from '@/model/entity_relation/attribute'
 import {Shape} from "@/model/shapes/shape"
 import {Rectangle2D} from "@/model/shapes/rectangle2d"
+import {ObjectType} from "~/types/types";
 
 export interface ObjectParams extends VectorParams {
   id: string;
   name: string;
   weak?: boolean;
+  _type: ObjectType;
 }
 
 export const WIDTH = 100
 export const HEIGHT = 40
 export default class ERObject extends Vector {
   _trueWidth = WIDTH
+  _type: ObjectType
   id: string
   name: string
   weak: boolean
-
   attributes: Attribute[] = []
   highlight = false
 
-  constructor({id, name, weak, x, y}: ObjectParams) {
+  constructor({id, name, weak, x, y, _type}: ObjectParams) {
     super({x, y})
+    this._type = _type
     this.id = id
     this.name = name
     this.weak = weak ?? false

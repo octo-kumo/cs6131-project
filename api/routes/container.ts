@@ -1,7 +1,7 @@
 import {Router} from 'express'
 import {escape} from "sqlstring"
 import database from '../data'
-import {server} from "../socket"
+import server from "../socket"
 import {requireAuth} from "../utils"
 
 const containers = Router({
@@ -53,7 +53,7 @@ containers.get('/:cid/c', (req, res) => {
 
 containers.post('/:cid/c', requireAuth, (req, res) => {
   database().query(`CALL sendMessage(?, ?, ?);`, [req.session.user?.uid, req.params.cid, req.body.message]).then((results: any) => {
-    server.emit('new.message', results[0][0])
+    server()?.emit('new.message', results[0][0])
     res.json({status: "success", message: results[0][0]})
   }).catch(error => res.json({status: "failed", error}))
 })

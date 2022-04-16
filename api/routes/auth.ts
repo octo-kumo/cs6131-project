@@ -1,13 +1,20 @@
 import {Router} from 'express'
 import {escape} from "sqlstring"
 import {validate} from 'email-validator'
+import sharedSession from "express-socket.io-session"
 import database from '../data'
 import {requireAuth} from "../utils"
+import server from "../socket"
+import {session} from "../session"
 
 const auth = Router({
   mergeParams: true
 })
 auth.get('/', requireAuth, (req, res) => {
+  // @ts-ignore
+  if (!server()) server(req.connection.server).use(sharedSession(session, {
+    autoSave: true
+  }))
   res.json({status: "success", user: req.session.user})
 })
 auth.post('/login', (req, res) => {

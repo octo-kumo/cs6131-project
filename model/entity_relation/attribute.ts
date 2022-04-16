@@ -23,8 +23,8 @@ export default class Attribute extends ERObject {
   type: AttributeType
   param?: string
 
-  constructor({id, name, weak, key, derived, type, parent, x, y, _parent}: AttributeParams) {
-    super({id, name, weak, x, y})
+  constructor({id, name, weak, key, derived, type, parent, x, y, _parent, _type}: AttributeParams) {
+    super({id, name, weak, x, y, _type})
     this.key = key ?? false
     this.derived = derived ?? false
     this.type = type ?? 'string'

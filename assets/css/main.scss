@@ -8,6 +8,10 @@
   focus:ring-opacity-75;
 }
 
+.btn.small {
+  @apply py-0.5 rounded
+}
+
 .btn.primary {
   @apply bg-blue-500
   hover:bg-blue-700
