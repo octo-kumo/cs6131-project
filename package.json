@@ -31,7 +31,8 @@
     "socket.io": "^4.4.1",
     "socket.io-client": "^4.4.1",
     "sqlstring": "^2.3.3",
-    "uuidv4": "^6.2.12"
+    "uuidv4": "^6.2.12",
+    "vue-simple-context-menu": "^3.4.2"
   },
   "devDependencies": {
     "@nuxt/types": "^2.15.8",

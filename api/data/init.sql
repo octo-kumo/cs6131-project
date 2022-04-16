@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS message
   datetime DATETIME    not null,
   cid      VARCHAR(36) not null, # from 'container'; SENT
   uid      VARCHAR(36) not null, # from 'user'; SENT
-  PRIMARY KEY (mid, cid, uid)
+  PRIMARY KEY (mid, cid)
 );
 
 CREATE TABLE IF NOT EXISTS container

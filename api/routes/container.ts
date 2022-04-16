@@ -58,4 +58,14 @@ containers.post('/:cid/c', requireAuth, (req, res) => {
   }).catch(error => res.json({status: "failed", error}))
 })
 
+containers.delete('/:cid/c/:mid', requireAuth, (req, res) => {
+  database().query(`DELETE
+                    FROM evilEr.message
+                    WHERE cid = ?
+                      AND mid = ?;`, [req.params.cid, req.params.mid]).then(() => {
+    server()?.emit('delete.message', {mid: req.params.mid, cid: req.params.cid})
+    res.json({status: "success"})
+  }).catch(error => res.json({status: "failed", error}))
+})
+
 export default containers
