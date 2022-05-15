@@ -10,11 +10,13 @@ import {session} from "../session"
 const auth = Router({
   mergeParams: true
 })
-auth.get('/', requireAuth, (req, res) => {
+auth.get('/', (req, _res, next) => {
   // @ts-ignore
   if (!server()) server(req.connection.server).use(sharedSession(session, {
     autoSave: true
   }))
+  next()
+}, requireAuth, (req, res) => {
   res.json({status: "success", user: req.session.user})
 })
 auth.post('/login', (req, res) => {

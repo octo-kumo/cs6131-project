@@ -2,7 +2,8 @@ import ERObject, {HEIGHT, ObjectParams, WIDTH} from '@/model/entity_relation/obj
 import Entity from '@/model/entity_relation/entity'
 import {drawLine, Shape} from "~/model/shapes/shape"
 import {Diamond} from "~/model/shapes/diamond"
-import {RelationLine} from "~/model/shapes/lines/relationline";
+import {RelationLine} from "~/model/shapes/lines/relationline"
+import {relatesEntity} from "~/types/data-types"
 
 export type RelationParam = ObjectParams
 
@@ -17,6 +18,18 @@ export interface Relation {
   uniqueIndex?: number;
 }
 
+export function relationToObj(r: Relation, did: string, relationship: ERObject, old?: string): relatesEntity {
+  return <relatesEntity>{
+    did,
+    cardinality: r.cardinality,
+    oid: r.entity.id,
+    rid: relationship.id,
+    role: r.role,
+    total: r.total,
+    ooid: old
+  }
+}
+
 export default class Relationship extends ERObject {
   relations: Relation[] = []
   lines: RelationLine[] = []
@@ -27,8 +40,24 @@ export default class Relationship extends ERObject {
   }
 
   removeRelation(i: number) {
-    this.relations.splice(i, 1)
+    const r = this.relations.splice(i, 1)
     this.revalidate()
+    return r
+  }
+
+  removeRelations(is: number[] | Relation[]) {
+    if (!Array.isArray(is) || is.length === 0) return
+    if (is[0] instanceof Number) {
+      is = is as number[]
+      is = is.sort((a, b) => b - a)
+      is.forEach(i => this.relations.splice(i, 1))
+    }
+    if (typeof is[0] === 'object') {
+      is = is as Relation[]
+      this.relations = this.relations.filter(R => !is.includes(R as (Relation & number)))
+    }
+    this.revalidate()
+    return is
   }
 
   revalidate() {

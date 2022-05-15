@@ -7,5 +7,6 @@ export default () => {
     autoConnect: true,
     withCredentials: true
   }
+  localStorage.debug = '*'
   return socket(options)
 }

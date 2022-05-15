@@ -3,6 +3,7 @@ import {escape} from "sqlstring"
 import database from '../data'
 import server from "../socket"
 import {requireAuth} from "../utils"
+import {MESSAGE_DELETED, MESSAGE_SENT} from "../socket.events"
 
 const containers = Router({
   mergeParams: true
@@ -23,7 +24,7 @@ containers.get('/:cid', (req, res) => {
   }).catch(error => res.json({status: "failed", error}))
 })
 
-containers.post('/:cid', (req, res) => {
+containers.post('/:cid', requireAuth, (req, res) => {
   database().query(`UPDATE evilEr.container
                     SET cid  = ?,
                         name = ?
@@ -53,7 +54,7 @@ containers.get('/:cid/c', (req, res) => {
 
 containers.post('/:cid/c', requireAuth, (req, res) => {
   database().query(`CALL sendMessage(?, ?, ?);`, [req.session.user?.uid, req.params.cid, req.body.message]).then((results: any) => {
-    server()?.emit('new.message', results[0][0])
+    server()?.emit(MESSAGE_SENT, results[0][0])
     res.json({status: "success", message: results[0][0]})
   }).catch(error => res.json({status: "failed", error}))
 })
@@ -63,7 +64,7 @@ containers.delete('/:cid/c/:mid', requireAuth, (req, res) => {
                     FROM evilEr.message
                     WHERE cid = ?
                       AND mid = ?;`, [req.params.cid, req.params.mid]).then(() => {
-    server()?.emit('delete.message', {mid: req.params.mid, cid: req.params.cid})
+    server()?.emit(MESSAGE_DELETED, {mid: req.params.mid, cid: req.params.cid})
     res.json({status: "success"})
   }).catch(error => res.json({status: "failed", error}))
 })

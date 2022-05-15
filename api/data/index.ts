@@ -29,6 +29,8 @@ export async function init() {
       await run('examples/' + exmp)
     }
   }
+
+  return db
 }
 
 async function run(file: string) {

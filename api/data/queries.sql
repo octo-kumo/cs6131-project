@@ -85,5 +85,5 @@ BEGIN
 END;
 
 CREATE VIEW vUsers AS
-SELECT uid, name, email, pfp, isAdmin
+SELECT uid, name, email, pfp, isAdmin, messages_sent
 from user;

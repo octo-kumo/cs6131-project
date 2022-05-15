@@ -3,6 +3,7 @@ import Entity from '@/model/entity_relation/entity'
 import {Shape} from "@/model/shapes/shape"
 import {HEIGHT} from "~/model/entity_relation/object"
 import {Ellipse2D} from "~/model/shapes/ellipse"
+import {objectEntity, specializationEntity} from "~/types/data-types"
 
 export interface SpecializationParam extends RelationParam {
   disjoint?: boolean;
@@ -50,5 +51,9 @@ export default class Specialization extends Relationship {
   getShape(width?: number, height?: number): Shape {
     if (width && height) return new Ellipse2D(-height * 0.25, -height * 0.25, height * 0.5, height * 0.5)
     else return this.getShape(this._trueWidth, HEIGHT)
+  }
+
+  toObject(did: string): objectEntity & specializationEntity {
+    return {disjoint: this.disjoint, ...super.toObject(did)}
   }
 }

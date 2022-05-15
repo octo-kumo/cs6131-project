@@ -3,6 +3,7 @@ import {Shape} from "~/model/shapes/shape"
 import {Ellipse2D} from "~/model/shapes/ellipse"
 import Vector from "~/model/entity_relation/vector"
 import {Line, lineUnderString} from "~/model/shapes/lines/line"
+import {attributeEntity, objectEntity} from "~/types/data-types"
 
 export type AttributeType = 'char' | 'string' | 'boolean' | 'integer' | 'float' | 'datetime' | 'date';
 
@@ -95,5 +96,9 @@ export default class Attribute extends ERObject {
 
   set x(value: number) {
     this._x = value - (this.parent?.x ?? 0)
+  }
+
+  toObject(did: string): objectEntity & attributeEntity {
+    return {isDerived: this.derived, isKey: this.key, pid: this.parent?.id ?? null, ...super.toObject(did)}
   }
 }

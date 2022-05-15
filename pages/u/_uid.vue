@@ -16,6 +16,9 @@
       </h6>
       <h6 class="font-mono text-gray-500" v-text="user.uid"/>
       <h6><a class="text-blue-500 underline" :href="`mailto:${user.email}`" v-text="user.email"/></h6>
+      <h6 class="text-gray-500">
+        <b class="text-black" v-text="user.messages_sent"/> messages sent
+      </h6>
       <img class="absolute right-0 top-0 h-full max-w-xs" :src="user.pfp" alt="">
     </div>
   </div>

@@ -1,8 +1,10 @@
+import {v4 as uuidv4} from 'uuid'
 import Vector, {VectorParams} from '@/model/entity_relation/vector'
 import Attribute from '@/model/entity_relation/attribute'
 import {Shape} from "@/model/shapes/shape"
 import {Rectangle2D} from "@/model/shapes/rectangle2d"
-import {ObjectType} from "~/types/types";
+import {ObjectType} from "~/types/types"
+import {objectEntity} from "~/types/data-types"
 
 export interface ObjectParams extends VectorParams {
   id: string;
@@ -25,7 +27,7 @@ export default class ERObject extends Vector {
   constructor({id, name, weak, x, y, _type}: ObjectParams) {
     super({x, y})
     this._type = _type
-    this.id = id
+    this.id = id ?? uuidv4()
     this.name = name
     this.weak = weak ?? false
   }
@@ -85,4 +87,12 @@ export default class ERObject extends Vector {
   toString() {
     return `[${this.name} ${super.toString()}]`
   }
+
+  toObject(did: string): objectEntity {
+    return {did, id: this.id, name: this.name, outlined: this.weak, type: this._type, x: this.x, y: this.y}
+  }
+}
+
+export function flatten(nodes: ERObject[]): ERObject[] {
+  return [...nodes, ...nodes.flatMap(n => flatten(n.attributes))]
 }

@@ -1,6 +1,7 @@
 import {Router} from 'express'
 import {escape} from "sqlstring"
 import database from '../data'
+import {requireAuth} from "../utils"
 
 const diagrams = Router({
   mergeParams: true
@@ -21,7 +22,7 @@ diagrams.get('/:did', (req, res) => {
   }).catch(error => res.json({status: "failed", error}))
 })
 
-diagrams.post('/:did', (req, res) => {
+diagrams.post('/:did', requireAuth, (req, res) => {
   database().query(`UPDATE evilEr.diagram
                     SET did  = ?,
                         cid  = ?,

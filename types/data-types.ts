@@ -1,4 +1,4 @@
-import {ObjectType} from "~/types/types";
+import {ObjectType} from "~/types/types"
 
 export interface adminEntity {
   'retired': boolean;
@@ -52,6 +52,7 @@ export interface diagramEntity {
   'did': string;
   'isEr': boolean;
   'name': string;
+  'objects_made': number;
 }
 
 export interface editorEntity {
@@ -127,6 +128,7 @@ export interface userEntity {
   'name': string;
   'pfp': string | null;
   'pwd_hash': string;
+  'messages_sent'?: number;
   'uid'?: string;
 }
 
@@ -135,5 +137,6 @@ export interface vuserEntity {
   'isAdmin': boolean;
   'name': string;
   'pfp': string | null;
+  'messages_sent'?: number;
   'uid'?: string;
 }

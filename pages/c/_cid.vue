@@ -128,6 +128,7 @@ import {del, get, post} from "~/plugins/api"
 import {containerEntity, diagramEntity, messageEntity, userEntity, vuserEntity} from "~/types/data-types"
 import client from "~/socket/client"
 import 'vue-simple-context-menu/dist/vue-simple-context-menu.css'
+import {MESSAGE_DELETED, MESSAGE_SENT} from "~/api/socket.events"
 
 @Component({
   components: {ContextMenu: VueSimpleContextMenu}
@@ -155,13 +156,13 @@ export default class containerView extends Vue {
     })
     this.io = client()
     this.io.connect()
-    this.io.on("new.message", (obj: messageEntity & vuserEntity) => {
+    this.io.on(MESSAGE_SENT, (obj: messageEntity & vuserEntity) => {
       if (obj.cid !== this.$route.params.cid) return
       const index = this.messages.findIndex(m => m.text === obj.text && m.pending)
       if (index > -1) this.messages.splice(index, 1)
       this.messages.push(obj)
     })
-    this.io.on("delete.message", (obj: messageEntity & vuserEntity) => {
+    this.io.on(MESSAGE_DELETED, (obj: messageEntity & vuserEntity) => {
       if (obj.cid !== this.$route.params.cid) return
       const index = this.messages.findIndex(m => m.mid === obj.mid)
       if (index > -1) this.messages.splice(index, 1)
